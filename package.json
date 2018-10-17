@@ -1,0 +1,19 @@
+{
+  "name": "generic",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "pretty-ms": "^4.0.0",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-google-maps": "^9.4.5",
+    "react-scripts": "1.1.5",
+    "sweetalert": "^2.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
