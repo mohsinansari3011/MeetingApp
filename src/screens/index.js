@@ -1,5 +1,6 @@
-import LoginScreen from './login'
+import LoginScreen from '../screens/login'
+import DashboardScreen from '../screens/dashboard'
 
 export {
-    LoginScreen  
+    LoginScreen, DashboardScreen
 }
