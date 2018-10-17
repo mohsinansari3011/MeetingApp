@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import * as firebase from './Config/firebase'
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
+import Routes from './config/router'
+
 
 const providerx = firebase.provider;
 
@@ -105,7 +107,17 @@ constructor(prop){
 
 	  return (
 		  <div>
-			  { <div> <button onClick={this.login}>Login with facebook shareef!</button> 
+
+			  <h1>This is header!</h1>
+			  <Routes />
+			  <h1>This is footer!</h1>
+
+			  {
+				  
+				  
+
+
+				  /* { <div> <button onClick={this.login}>Login with facebook shareef!</button> 
 				  <button onClick={this.logout}>Logout with facebook shareef!</button>
 				</div>}
 
@@ -117,7 +129,7 @@ constructor(prop){
 				  mapElement={<div style={{ height: `100%` }} />}
 				  coords={coords}
 				  updateCoords={this.updateCoords}
-			  />}
+			  />} */}
 		  </div>
 	  )
   }
