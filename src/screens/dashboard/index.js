@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import swal from 'sweetalert';
 import * as firebase from '../../config/firebase'
-import { withRouter, Link, Redirect, Route, browserHistory } from "react-router-dom";
-const providerx = firebase.provider;
+import { Link } from "react-router-dom";
+
+//const providerx = firebase.provider;
 
 class Dashboard extends Component {
 
@@ -27,6 +28,7 @@ class Dashboard extends Component {
             currentimage :'image1',
             beverages : [],
             duration : [],
+            gotomap :false,
         };
 
 
@@ -137,7 +139,25 @@ if(nickname.length > 0 && phonenumber.length>0)
 
 
     
-   
+    componentDidUpdate(){
+
+       const img1 = localStorage.getItem("image1");
+       const img2 = localStorage.getItem("image2");
+       const img3 = localStorage.getItem("image3");
+
+       if (img1 != null && img2 != null && img3 != null) {
+           if (img1.length > 0 && img2.length > 0 && img3.length > 0) {
+
+               //console.log(document.getElementById("image1"));
+               if (document.getElementById("image1") && document.getElementById("image2") && document.getElementById("image3")){
+               document.getElementById("image1").setAttribute('src', img1);
+               document.getElementById("image2").setAttribute("src", img2);
+               document.getElementById("image3").setAttribute("src", img3)
+               }
+           }
+       }
+
+   }
     componentDidMount() {
      
         firebase.auth.onAuthStateChanged(user => {
@@ -148,6 +168,8 @@ if(nickname.length > 0 && phonenumber.length>0)
                 this.props.history.push('/');
             }
         });
+
+        
     }
     
 
@@ -157,8 +179,8 @@ profileScreen1(){
 
 
     return( <div>
-        <input type="text" onChange={this.handlenickname.bind(this)} placeholder="nickname"/>
-        <input type="text" onChange={this.handlephone.bind(this)} placeholder="phone number" />
+        <input type="text" value={this.state.nickname} onChange={this.handlenickname.bind(this)} placeholder="nickname"/>
+        <input type="text" value={this.state.phonenumber} onChange={this.handlephone.bind(this)} placeholder="phone number" />
         <br /><br />
         <input type="button" value="next" onClick={this.NextS1} />
 
@@ -232,7 +254,7 @@ changefile(e){
         return (<div>
             <h1>Select Images</h1>
            
-            <input onChange={this.changefile.bind(this)} id="fileInput1" type="file" />
+            <input onChange={this.changefile.bind(this)} id="fileInput1" type="file" style={{ display:"none",}} />
             <img id="image1" alt="picutre" src="http://blog.ramboll.com/fehmarnbelt/wp-content/themes/ramboll2/images/profile-img.jpg"
                 alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)}/>
             <br/>
@@ -270,6 +292,8 @@ changefile(e){
         console.log(beverages);
         
         localStorage.setItem("beverages", beverages);
+
+        this.checkbevearages();
     }
 
 
@@ -293,10 +317,40 @@ changefile(e){
         console.log(duration);
 
         localStorage.setItem("duration",duration);
+
+        this.checkbevearages();
+    }
+
+
+    checkbevearages(){
+
+        const { gotomap } = this.state;
+        const duration = localStorage.getItem("duration");
+        const beverages = localStorage.getItem("beverages");
+        
+        if (duration != null && beverages != null)
+        {
+            if(duration.length > 0 && beverages.length > 0)
+            {
+                this.setState({
+                    gotomap : true,
+                })
+            }else{
+                this.setState({
+                    gotomap: false,
+                })
+            }
+        }else{
+            this.setState({
+                gotomap: false,
+            })
+        }
+
     }
 
     profileScreen3() {
 
+        const { gotomap } = this.state;
 
         return (<div>
             <h1>Select Beverages</h1>
@@ -318,7 +372,8 @@ changefile(e){
             <br /><br />
             <input type="button" value="back" onClick={this.BackS3}/>
 
-            <Link to="/maps"> <input type="button" value="next" /> </Link>
+            {gotomap && <Link to="/maps"> <input type="button" value="next" /> </Link> }
+            
 
         </div>);
     }

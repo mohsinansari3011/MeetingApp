@@ -41,12 +41,18 @@ class Mapscreen extends Component {
 
     componentDidMount() {
 
-        
+
         this.setPosition();
     
     }
 
 
+    getcords(){
+
+        const { coords } = this.state;
+
+        console.log(coords);
+    }
 
     profileScreen4() {
         const { coords } = this.state;
@@ -64,7 +70,7 @@ class Mapscreen extends Component {
                     updateCoords={this.updateCoords}
                 />}
 
-                <input type="button" value="submit" />
+                <input type="button" value="submit" onClick={this.getcords.bind(this)} />
             </div>
 
         );

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import swal from 'sweetalert';
 import * as firebase from '../../config/firebase'
-import { withRouter, Link, Redirect, Route, browserHistory  } from "react-router-dom";
+import { Link, Redirect, Route } from "react-router-dom";
 import Dash from '../dashboard'
 
 const providerx = firebase.provider;
