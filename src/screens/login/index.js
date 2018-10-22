@@ -123,9 +123,12 @@ constructor() {
 
     handleChangeEmail(e) {
         this.setState({ email: e.target.value });
+
+       
     }
     handleChangePassword = (e) => {
         this.setState({ password: e.target.value });
+       
     }
 
 

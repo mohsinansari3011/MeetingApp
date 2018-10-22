@@ -21,10 +21,12 @@ class Dashboard extends Component {
 
             nickname:'',
             phonenumber:'',
-            imagepath1: '',
-            imagepath2: '',
-            imagepath3: '',
+            //imagepath1: '',
+            //imagepath2: '',
+            //imagepath3: '',
             currentimage :'image1',
+            beverages : [],
+            duration : [],
         };
 
 
@@ -46,6 +48,8 @@ class Dashboard extends Component {
         this.setState({
             nickname:niname,
         })
+
+        localStorage.setItem("niname", e.target.value);
     }
 
 
@@ -55,6 +59,8 @@ class Dashboard extends Component {
         this.setState({
             phonenumber: pnumber,
         })
+
+        localStorage.setItem("pnumber", e.target.value);
     }
 
     NextS1(){
@@ -78,14 +84,24 @@ if(nickname.length > 0 && phonenumber.length>0)
     NextS2() {
 
         //const { p1, p2, p3, p4 } = this.state;
+        var img1 = localStorage.getItem("image1");
+        var img2 = localStorage.getItem("image2");
+        var img3 = localStorage.getItem("image3");
 
-        this.setState({
-            p1: false,
-            p2: false,
-            p3: true,
-           
+        if (img1 != null && img2 != null && img3 != null){
+        if (img1.length > 0 && img2.length > 0 && img3.length > 0) {
+            this.setState({
+                p1: false,
+                p2: false,
+                p3: true,
 
-        })
+
+            })
+
+        } else { swal("badjob!", "Select All Images") }
+        } else { swal("badjob!", "Select All Images") }
+
+        
     }
 
    
@@ -166,13 +182,6 @@ clickfile(e){
 }
 
 
-getpath(){
-
-    var img1 , img2 , img3 ='';
-    img1 = localStorage.getItem("image1");
-    img2 = localStorage.getItem("image2");
-    img3 = localStorage.getItem("image3");
-}
 changefile(e){
 
     const { currentimage } = this.state;
@@ -238,26 +247,74 @@ changefile(e){
 
         </div>);
     }
+
+
+
+    selectbeverages(e){
+
+        const { beverages } = this.state;
+
+        console.log("value  ", e.target.value);
+        if (e.target.checked){
+            beverages.push(e.target.value);
+        }else{
+            var index = beverages.indexOf(e.target.value);
+            if (index > -1) {
+                beverages.splice(index, 1);
+            }
+        }
+       
+        this.setState({
+            beverages,
+        })
+        console.log(beverages);
+        
+        localStorage.setItem("beverages", beverages);
+    }
+
+
+    selectduration(e) {
+
+        const { duration } = this.state;
+
+        console.log("value  ", e.target.value);
+        if (e.target.checked) {
+            duration.push(e.target.value);
+        } else {
+            var index = duration.indexOf(e.target.value);
+            if (index > -1) {
+                duration.splice(index, 1);
+            }
+        }
+
+        this.setState({
+            duration,
+        })
+        console.log(duration);
+
+        localStorage.setItem("duration",duration);
+    }
+
     profileScreen3() {
 
 
         return (<div>
             <h1>Select Beverages</h1>
             <img alt="Coffee" src="https://via.placeholder.com/350x150" height="25px" width="25px" />
-            <input type="checkbox" value="Coffee" /> Coffee 
+            <input type="checkbox" onChange={this.selectbeverages.bind(this)} value="Coffee" id="cbcoffee" /> <label htmlFor="cbcoffee">Coffee</label>
             
             <img alt="Juice" src="https://via.placeholder.com/350x150" height="25px" width="25px" />
-            <input type="checkbox" value="Juice" />Juice 
+            <input type="checkbox" onChange={this.selectbeverages.bind(this)} value="Juice" id="cbjuice" /><label htmlFor="cbjuice">Juice</label> 
             
             <img alt="Cocktail" src="https://via.placeholder.com/350x150" height="25px" width="25px" />
-            <input type="checkbox" value="Cocktail" />Cocktail
+            <input type="checkbox" onChange={this.selectbeverages.bind(this)} value="Cocktail" id="cbcocktail" /><label htmlFor="cbcocktail">Cocktail</label>
             
 
             <br/><br/>
             duration of meeting
-            <input type="checkbox" value="20" /> 20 Min 
-            <input type="checkbox" value="60" /> 60 Min 
-            <input type="checkbox" value="120" /> 120 Min 
+            <input type="checkbox" onChange={this.selectduration.bind(this)} value="20" id="cb20" /> <label htmlFor="cb20">20 Min </label>
+            <input type="checkbox" onChange={this.selectduration.bind(this)} value="60" id="cb60" /> <label htmlFor="cb60">40 Min </label>
+            <input type="checkbox" onChange={this.selectduration.bind(this)} value="120" id="cb120" /> <label htmlFor="cb120">120 Min </label>
             <br /><br />
             <input type="button" value="back" onClick={this.BackS3}/>
 

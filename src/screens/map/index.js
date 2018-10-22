@@ -40,6 +40,8 @@ class Mapscreen extends Component {
 
 
     componentDidMount() {
+
+        
         this.setPosition();
     
     }
