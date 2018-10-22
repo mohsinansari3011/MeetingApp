@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import swal from 'sweetalert';
 import * as firebase from '../../config/firebase'
 import { withRouter, Link, Redirect, Route, browserHistory  } from "react-router-dom";
+import Dash from '../dashboard'
 
 const providerx = firebase.provider;
 
@@ -15,6 +16,7 @@ constructor() {
     this.state = {
         email: '',
         password: '',
+        isloged : true,
     };
 
 
@@ -29,7 +31,7 @@ constructor() {
 
 
     componentDidMount() {
-        //this.setPosition();
+       
         const { currentuser } = this.state;
         console.log("currentuser ** ", currentuser);
         firebase.auth.onAuthStateChanged(function (user) {
@@ -56,7 +58,13 @@ constructor() {
                     });
 
                    console.log("already logged in!!");
-                    browserHistory.push('/dashboard');
+                   <Route path="/" render={()=>( 
+                       this.state.isloged ? (<Dash/>) :(<Redirect to="/aaa" />)
+                   )}  />
+                    if (true) {
+                       
+                        //return <Redirect to='/dashboard' />
+                    }
 
                    
                 }
@@ -65,6 +73,7 @@ constructor() {
 
             } else {
                 console.log("user Logout");
+                this.props.history.push('/');
             }
         });
 
