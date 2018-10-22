@@ -17,6 +17,14 @@ class Dashboard extends Component {
             p1:true,
             p2:false,
             p3:false,
+
+
+            nickname:'',
+            phonenumber:'',
+            imagepath1: '',
+            imagepath2: '',
+            imagepath3: '',
+            currentimage :'image1',
         };
 
 
@@ -25,27 +33,51 @@ class Dashboard extends Component {
         this.NextS2 = this.NextS2.bind(this);
         this.BackS2 = this.BackS2.bind(this);
         this.BackS3 = this.BackS3.bind(this);
+
+        //this.readURL = this.readURL.bind(this);
     }
 
 
 
 
+    handlenickname(e){
+        //const {nickname} = this.state;
+        const niname = e.target.value;
+        this.setState({
+            nickname:niname,
+        })
+    }
+
+
+    handlephone(e) {
+        //const { phonenumber } = this.state;
+        const pnumber = e.target.value;
+        this.setState({
+            phonenumber: pnumber,
+        })
+    }
+
     NextS1(){
 
-        const {p1,p2,p3,p4} = this.state;
+        const { phonenumber, nickname } = this.state;
+        console.log(nickname, " nickname ", phonenumber, " phonenumber ");
 
+if(nickname.length > 0 && phonenumber.length>0)
+{
         this.setState({
             p1: false,
             p2: true,
             p3: false,
 
         })
+    
+} else { swal("badjob!","Select Data") }
     }
 
 
     NextS2() {
 
-        const { p1, p2, p3, p4 } = this.state;
+        //const { p1, p2, p3, p4 } = this.state;
 
         this.setState({
             p1: false,
@@ -62,7 +94,7 @@ class Dashboard extends Component {
 
     BackS3() {
 
-        const { p1, p2, p3, p4 } = this.state;
+        //const { p1, p2, p3, p4 } = this.state;
 
         this.setState({
             p1: false,
@@ -75,7 +107,7 @@ class Dashboard extends Component {
 
     BackS2() {
 
-        const { p1, p2, p3, p4 } = this.state;
+        //const { p1, p2, p3, p4 } = this.state;
 
         this.setState({
             p1: true,
@@ -109,12 +141,80 @@ profileScreen1(){
 
 
     return( <div>
-        <input type="text" placeholder="nickname"/>
-        <input type="text" placeholder="phone number" />
+        <input type="text" onChange={this.handlenickname.bind(this)} placeholder="nickname"/>
+        <input type="text" onChange={this.handlephone.bind(this)} placeholder="phone number" />
         <br /><br />
         <input type="button" value="next" onClick={this.NextS1} />
 
     </div>);
+}
+
+
+clickfile(e){
+    console.log(e.target.id);
+
+    const { currentimage} = this.state;
+
+    this.setState({
+        currentimage: e.target.id,
+    })
+
+    if (document.getElementById('fileInput1'))
+    {
+        document.getElementById('fileInput1').click();
+    }
+}
+
+
+getpath(){
+
+    var img1 , img2 , img3 ='';
+    img1 = localStorage.getItem("image1");
+    img2 = localStorage.getItem("image2");
+    img3 = localStorage.getItem("image3");
+}
+changefile(e){
+
+    const { currentimage } = this.state;
+    //console.log(currentimage,"currentimage id");
+    console.log(e.target.files[0]);
+
+
+  
+
+    var imgpath = '';
+    if (e.target.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            imgpath = e.target.result;
+            document.getElementById(currentimage).setAttribute('src', e.target.result)
+            localStorage.setItem(currentimage,imgpath)
+        };
+
+        
+
+        reader.readAsDataURL(e.target.files[0]);
+    }
+
+    
+    // if(imgpath.length > 0){
+    // if (currentimage == "image1") {
+    //     this.setState({
+    //         imagepath1: imgpath,
+    //     });
+    // }
+    // if (currentimage == "image2") {
+    //     this.setState({
+    //         imagepath2: imgpath,
+    //     });
+    // }
+    // if (currentimage == "image3") {
+    //     this.setState({
+    //         imagepath3: imgpath,
+    //     });
+    // }
+    // }
+
 }
 
     profileScreen2() {
@@ -122,11 +222,16 @@ profileScreen1(){
 
         return (<div>
             <h1>Select Images</h1>
-            <img src="https://via.placeholder.com/350x150" height="100px" width="200px"/>
+           
+            <input onChange={this.changefile.bind(this)} id="fileInput1" type="file" />
+            <img id="image1" alt="picutre" src="http://blog.ramboll.com/fehmarnbelt/wp-content/themes/ramboll2/images/profile-img.jpg"
+                alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)}/>
             <br/>
-            <img src="https://via.placeholder.com/350x150" height="100px" width="200px" />
+            <img id="image2" alt="picutre" src="http://blog.ramboll.com/fehmarnbelt/wp-content/themes/ramboll2/images/profile-img.jpg"
+                alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)} />
             <br />
-            <img src="https://via.placeholder.com/350x150" height="100px" width="200px" />
+            <img id="image3" alt="picutre" src="http://blog.ramboll.com/fehmarnbelt/wp-content/themes/ramboll2/images/profile-img.jpg"
+                alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)} />
             <br />
             <input type="button" value="back" onClick={this.BackS2} />
             <input type="button" value="next" onClick={this.NextS2}/>
@@ -138,13 +243,13 @@ profileScreen1(){
 
         return (<div>
             <h1>Select Beverages</h1>
-            <img src="https://via.placeholder.com/350x150" height="25px" width="25px" />
+            <img alt="Coffee" src="https://via.placeholder.com/350x150" height="25px" width="25px" />
             <input type="checkbox" value="Coffee" /> Coffee 
             
-            <img src="https://via.placeholder.com/350x150" height="25px" width="25px" />
+            <img alt="Juice" src="https://via.placeholder.com/350x150" height="25px" width="25px" />
             <input type="checkbox" value="Juice" />Juice 
             
-            <img src="https://via.placeholder.com/350x150" height="25px" width="25px" />
+            <img alt="Cocktail" src="https://via.placeholder.com/350x150" height="25px" width="25px" />
             <input type="checkbox" value="Cocktail" />Cocktail
             
 
@@ -156,9 +261,7 @@ profileScreen1(){
             <br /><br />
             <input type="button" value="back" onClick={this.BackS3}/>
 
-            <Link to="/maps"> 
-            <input type="button" value="next" onClick={this.NextS3} />
-            </Link>
+            <Link to="/maps"> <input type="button" value="next" /> </Link>
 
         </div>);
     }
@@ -174,7 +277,7 @@ profileScreen1(){
 
 
         const { currentuser, p1, p2, p3 } = this.state
-        console.log(currentuser ," render2");
+        //console.log(currentuser ," render2");
         return (<div> <h1>Dashboard!!! </h1> 
            
 
