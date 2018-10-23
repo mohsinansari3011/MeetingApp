@@ -113,8 +113,8 @@ submitDatatoFirestore(){
 
     const niname = localStorage.getItem("niname");
     const pnumber = localStorage.getItem("pnumber");
-    const beverages = localStorage.getItem("beverages");
-    const duration = localStorage.getItem("duration");
+    const beveragess = localStorage.getItem("beverages");
+    const durations = localStorage.getItem("duration");
     const image1 = localStorage.getItem("image1");
     const image2 = localStorage.getItem("image2");
     const image3 = localStorage.getItem("image3");
@@ -122,9 +122,12 @@ submitDatatoFirestore(){
     const uid = currentuser.uid;
     
     try {
-        firebase.db.collection("tbluserprofile").add({ uid, email, displayname, puid, pimage, nickname: niname, phonenumber: pnumber });
-        firebase.db.collection("tbluserimages").add({ uid, email, puid, image1, image2, image3 });
-        firebase.db.collection("tbluserbeverages").add({ uid, email, puid, beverages, duration });
+
+        const beverages = beveragess.split(',');
+        const duration = durations.split(',');
+
+        firebase.db.collection("tbluserprofile").add({ uid, email, displayname, puid, pimage, nickname: niname, phonenumber: pnumber, image1, image2, image3, beverages, duration })
+            .then().catch(err => swal('There was an error:',err,"error"))
 
         localStorage.setItem("dashboard","showmeeting");
         swal("Good Job!", "Successfully Updated", "success");

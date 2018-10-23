@@ -162,7 +162,7 @@ if(nickname.length > 0 && phonenumber.length>0)
      
         firebase.auth.onAuthStateChanged(user => {
             if (user) {
-                this.setState({ currentuser: user.providerData });
+                this.setState({ currentuser: user });
             } else {
                 console.info('Must be authenticated');
                 this.props.history.push('/');
@@ -322,9 +322,9 @@ changefile(e){
         this.setState({
             duration,
         })
-        console.log(duration);
+        //console.log("JSON.stringify(duration)   ",JSON.stringify(duration));
 
-        localStorage.setItem("duration",duration);
+        localStorage.setItem("duration", duration);
 
         this.checkbevearages();
     }
@@ -336,6 +336,8 @@ changefile(e){
         const duration = localStorage.getItem("duration");
         const beverages = localStorage.getItem("beverages");
         
+
+        //console.log("JSON.parse(duration)  ",JSON.parse(duration));
         if (duration != null && beverages != null)
         {
             if(duration.length > 0 && beverages.length > 0)
@@ -391,6 +393,72 @@ changefile(e){
     
 
 
+getAllusers(){
+
+    const { currentuser } = this.state;
+
+    if (currentuser) {
+        
+    
+    //console.log(currentuser.uid);
+        firebase.db.collection("tbluserprofile").where("uid", "==", currentuser.uid).get()
+        .then((query) => {
+            query.forEach(((doc) => {
+               
+                //let message = { uid: doc.data().uid, id: doc.id, displayName: doc.data().displayName };
+               
+                let objb = doc.data().beverages;
+                let obdu = doc.data().duration;
+
+                
+                var arrid = [];
+                if (objb.length > 0 ) {
+                    for (let index = 0; index < objb.length; index++) {
+
+                        firebase.db.collection("tbluserprofile").
+                            where("beverages", "array-contains", objb[index]).get().then((query) => {
+                                query.forEach(((bev) => {
+                                    //console.log(bev.data().beverages);
+                                    //console.log(bev.data().uid);
+                                    arrid.push(bev.data().uid);
+                                }))
+                            })
+                    }
+                }
+                
+                if (obdu.length > 0) {
+                    for (let index = 0; index < obdu.length; index++) {
+
+                        firebase.db.collection("tbluserprofile").
+                            where("duration", "array-contains", obdu[index]).get().then((query) => {
+                                query.forEach(((dur) => {
+                                    //console.log(bev.data().beverages);
+                                    //console.log(dur.data().uid);
+                                    arrid.push(dur.data().uid);
+                                }))
+                            })
+                    }
+                }
+
+                console.log(arrid);
+                
+
+                
+                //let dup = [...new Set(arrid)];
+                //var dd = arrid;
+               // console.log(dd);
+               
+
+
+            }))
+        })
+
+    }
+
+}
+
+
+
 
     
     render() {
@@ -404,7 +472,7 @@ changefile(e){
 
             
             {currentuser ? <ul>
-                {currentuser.map((user) =>{
+                {currentuser.providerData.map((user) =>{
                     return(
                         <li>Welcome {user.displayName}--{user.email}</li>
                     )}
@@ -416,7 +484,8 @@ changefile(e){
 
             
             {dashboardsrc === "showmeeting" ? <div>
-             “You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.   
+             “You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.  
+             <button onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button> 
               </div> : <div> 
 
                     {p1 && !p2 && !p3 && this.profileScreen1()}
@@ -426,7 +495,7 @@ changefile(e){
               </div>}
     
             
-                <button onClick={this.LogoutFromAccount.bind(this)} type="submit" className="btn btn-primary">Logout With Facebook</button>
+                <button onClick={this.LogoutFromAccount.bind(this)} type="submit" className="btn btn-primary">Logout</button>
           
         </div>
         );

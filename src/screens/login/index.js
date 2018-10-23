@@ -39,6 +39,7 @@ clearLocalStorage(){
     localStorage.removeItem("image3");
     localStorage.removeItem("niname");
     localStorage.removeItem("pnumber");
+    localStorage.removeItem("dashboard");
 
     
 }
@@ -49,10 +50,10 @@ clearLocalStorage(){
         this.clearLocalStorage();
         
         const { currentuser } = this.state;
-        console.log("currentuser ** ", currentuser);
+        //console.log("currentuser ** ", currentuser);
         firebase.auth.onAuthStateChanged(function (user) {
 
-            console.log("user **", user);
+            //console.log("user **", user);
             if (user) {
                 let currentuserdata = [];
                 if (user != null) {
@@ -74,9 +75,8 @@ clearLocalStorage(){
                     });
 
                    console.log("already logged in!!");
-                   <Route path="/" render={()=>( 
-                       this.state.isloged ? (<Dash/>) :(<Redirect to="/aaa" />)
-                   )}  />
+                    this.props.history.push('/dashbrd');
+                  
                     if (true) {
                        
                         //return <Redirect to='/dashboard' />
