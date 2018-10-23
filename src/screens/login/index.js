@@ -20,6 +20,7 @@ constructor() {
     };
 
 
+    this.Loginfirebase = this.Loginfirebase.bind(this);
     this.signUpfirebase = this.signUpfirebase.bind(this);
     this.handleChangeEmail = this.handleChangeEmail.bind(this);
     this.handleChangePassword = this.handleChangePassword.bind(this);
@@ -29,9 +30,24 @@ constructor() {
 
 
 
+clearLocalStorage(){
+
+    localStorage.removeItem("beverages");
+    localStorage.removeItem("duration");
+    localStorage.removeItem("image1");
+    localStorage.removeItem("image2");
+    localStorage.removeItem("image3");
+    localStorage.removeItem("niname");
+    localStorage.removeItem("pnumber");
+
+    
+}
+
 
     componentDidMount() {
        
+        this.clearLocalStorage();
+        
         const { currentuser } = this.state;
         console.log("currentuser ** ", currentuser);
         firebase.auth.onAuthStateChanged(function (user) {
@@ -49,7 +65,7 @@ constructor() {
                             'uid': profile.uid
                         })
 
-                        //console.log(currentuserdata);
+                        
                         // console.log("Sign-in provider: " + profile.providerId);
                         // console.log("  Provider-specific UID: " + profile.uid);
                         // console.log("  Name: " + profile.displayName);
@@ -73,7 +89,7 @@ constructor() {
 
             } else {
                 console.log("user Logout");
-                this.props.history.push('/');
+                //this.props.history.push('/');
             }
         });
 
@@ -98,7 +114,7 @@ constructor() {
 
                     console.log(currentuserdata);
                     console.log("logged in Successfully!!");
-                 
+                    this.props.history.push('/dashboard');
                     // console.log("Sign-in provider: " + profile.providerId);
                     // console.log("  Provider-specific UID: " + profile.uid);
                     // console.log("  Name: " + profile.displayName);
@@ -133,7 +149,24 @@ constructor() {
 
 
     
+    Loginfirebase(email, password) {
 
+        firebase.auth.signInWithEmailAndPassword(email, password)
+            .then((res) => {
+                localStorage.setItem("userid", res.user.uid);
+                localStorage.setItem("useremail", email);
+
+                this.setState({ islogin: true });
+
+                swal("Good job!", "Login Successfully", "success");
+
+
+            })
+            .catch((error) => {
+                swal("Bad job!", error.message, "error");
+            })
+
+    }
 signUpfirebase(){
 
   const { email, password } = this.state;
@@ -147,7 +180,7 @@ signUpfirebase(){
         .then(() => {
           localStorage.setItem("userid", CurrentuseR);
           localStorage.setItem("useremail", email);
-          this.setState({ islogin: true });
+          //this.setState({ islogin: true });
 
           this.Loginfirebase(email, password);
           

@@ -22,7 +22,7 @@ class Mapscreen extends Component {
 
 
         this.updateCoords = this.updateCoords.bind(this);
-        
+        this.submitDatatoFirestore = this.submitDatatoFirestore.bind(this)
     }
 
 
@@ -41,10 +41,21 @@ class Mapscreen extends Component {
 
     componentDidMount() {
 
+        firebase.auth.onAuthStateChanged(user => {
+            if (user) {
+                this.setState({ currentuser: user });
+                //this.setPosition();
+                //console.log(user.uid);
+            } else {
+                console.info('Must be authenticated');
+                this.props.history.push('/');
+            }
+        });
 
-        this.setPosition();
-    
+
     }
+
+    
 
 
     getcords(){
@@ -70,11 +81,64 @@ class Mapscreen extends Component {
                     updateCoords={this.updateCoords}
                 />}
 
-                <input type="button" value="submit" onClick={this.getcords.bind(this)} />
+                <input type="button" value="submit" onClick={this.submitDatatoFirestore} />
             </div>
 
         );
     }
+
+
+
+
+
+submitDatatoFirestore(){
+
+    const { currentuser } = this.state; 
+
+    //console.log(currentuser.providerData.displayName);
+    let displayname = "";
+    let email = "";
+    let puid = "";
+    let pimage = "";
+
+    currentuser.providerData.forEach(function (profile) {
+        
+        displayname = profile.displayName;
+        email = profile.email;
+        puid = profile.uid;
+        pimage = profile.photoURL;
+        })
+
+    console.log(currentuser.uid);
+
+    const niname = localStorage.getItem("niname");
+    const pnumber = localStorage.getItem("pnumber");
+    const beverages = localStorage.getItem("beverages");
+    const duration = localStorage.getItem("duration");
+    const image1 = localStorage.getItem("image1");
+    const image2 = localStorage.getItem("image2");
+    const image3 = localStorage.getItem("image3");
+
+    const uid = currentuser.uid;
+    
+    try {
+        firebase.db.collection("tbluserprofile").add({ uid, email, displayname, puid, pimage, nickname: niname, phonenumber: pnumber });
+        firebase.db.collection("tbluserimages").add({ uid, email, puid, image1, image2, image3 });
+        firebase.db.collection("tbluserbeverages").add({ uid, email, puid, beverages, duration });
+
+        localStorage.setItem("dashboard","showmeeting");
+        swal("Good Job!", "Successfully Updated", "success");
+        this.props.history.push('/dashboard');
+
+
+    } catch (error) {
+        
+        swal("Bad Job!", error, "error");
+    }
+    
+
+
+}
 
 
     render(){

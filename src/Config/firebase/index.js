@@ -6,7 +6,7 @@ var config = {
     authDomain: "meetingapp3011.firebaseapp.com",
     databaseURL: "https://meetingapp3011.firebaseio.com",
     projectId: "meetingapp3011",
-    storageBucket: "",
+    storageBucket: "meetingapp3011.appspot.com",
     messagingSenderId: "228652578963"
 };
 const fire = firebase.initializeApp(config);

@@ -173,7 +173,15 @@ if(nickname.length > 0 && phonenumber.length>0)
     }
     
 
+LogoutFromAccount(){
 
+    firebase.auth.signOut().then(function () {
+        console.log('Signed Out');
+    }, function (error) {
+        console.error('Sign Out Error', error);
+    });
+
+}
 
 profileScreen1(){
 
@@ -389,6 +397,7 @@ changefile(e){
 
 
         const { currentuser, p1, p2, p3 } = this.state
+        const dashboardsrc = localStorage.getItem("dashboard");
         //console.log(currentuser ," render2");
         return (<div> <h1>Dashboard!!! </h1> 
            
@@ -406,15 +415,19 @@ changefile(e){
             }
 
             
+            {dashboardsrc === "showmeeting" ? <div>
+             “You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.   
+              </div> : <div> 
 
-            {p1 && !p2 && !p3 && this.profileScreen1()}
-            {!p1 && p2 && !p3 && this.profileScreen2()}
-            {!p1 && !p2 && p3 && this.profileScreen3()}
+                    {p1 && !p2 && !p3 && this.profileScreen1()}
+                    {!p1 && p2 && !p3 && this.profileScreen2()}
+                    {!p1 && !p2 && p3 && this.profileScreen3()}
+
+              </div>}
+    
+            
+                <button onClick={this.LogoutFromAccount.bind(this)} type="submit" className="btn btn-primary">Logout With Facebook</button>
           
-
-            <Link to="/"> 
-            <button type="submit" className="btn btn-primary">Logout With Facebook</button>
-            </Link>
         </div>
         );
     }
