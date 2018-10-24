@@ -44,7 +44,7 @@ class Mapscreen extends Component {
         firebase.auth.onAuthStateChanged(user => {
             if (user) {
                 this.setState({ currentuser: user });
-                //this.setPosition();
+                this.setPosition();
                 //console.log(user.uid);
             } else {
                 console.info('Must be authenticated');
@@ -93,7 +93,7 @@ class Mapscreen extends Component {
 
 submitDatatoFirestore(){
 
-    const { currentuser } = this.state; 
+    const { currentuser, coords } = this.state; 
 
     //console.log(currentuser.providerData.displayName);
     let displayname = "";
@@ -126,7 +126,11 @@ submitDatatoFirestore(){
         const beverages = beveragess.split(',');
         const duration = durations.split(',');
 
-        firebase.db.collection("tbluserprofile").add({ uid, email, displayname, puid, pimage, nickname: niname, phonenumber: pnumber, image1, image2, image3, beverages, duration })
+        const latitude = coords.latitude;
+        const longitude = coords.longitude;
+
+
+        firebase.db.collection("tbluserprofile").add({ uid, email, displayname, puid, pimage, nickname: niname, phonenumber: pnumber, image1, image2, image3, beverages, duration, latitude, longitude })
             .then().catch(err => swal('There was an error:',err,"error"))
 
         localStorage.setItem("dashboard","showmeeting");
@@ -147,7 +151,7 @@ submitDatatoFirestore(){
     render(){
 
 
-        return(<div>{this.profileScreen4()}</div>)
+        return (<div>  <button onClick={this.getcords.bind(this)}>getcords</button> {this.profileScreen4()}</div>)
     }
 
 
