@@ -19,7 +19,9 @@ class Dashboard extends Component {
             p2:false,
             p3:false,
 
+            meetinglist :false,
 
+            list: [], 
             nickname:'',
             phonenumber:'',
             //imagepath1: '',
@@ -37,7 +39,7 @@ class Dashboard extends Component {
         this.NextS2 = this.NextS2.bind(this);
         this.BackS2 = this.BackS2.bind(this);
         this.BackS3 = this.BackS3.bind(this);
-
+        this.showMeetingList = this.showMeetingList.bind(this);
         //this.readURL = this.readURL.bind(this);
     }
 
@@ -197,9 +199,9 @@ profileScreen1(){
 
 
 clickfile(e){
-    console.log(e.target.id);
+    //console.log(e.target.id);
 
-    const { currentimage} = this.state;
+    //const { currentimage} = this.state;
 
     this.setState({
         currentimage: e.target.id,
@@ -216,7 +218,7 @@ changefile(e){
 
     const { currentimage } = this.state;
     //console.log(currentimage,"currentimage id");
-    console.log(e.target.files[0]);
+    //console.log(e.target.files[0]);
 
 
   
@@ -395,68 +397,63 @@ changefile(e){
 
 getAllusers(){
 
+
     const { currentuser } = this.state;
 
     if (currentuser) {
-        
-    
-    //console.log(currentuser.uid);
+
         firebase.db.collection("tbluserprofile").where("uid", "==", currentuser.uid).get()
-        .then((query) => {
-            query.forEach(((doc) => {
-               
-                //let message = { uid: doc.data().uid, id: doc.id, displayName: doc.data().displayName };
-               
-                let objb = doc.data().beverages;
-                let obdu = doc.data().duration;
+            .then((query) => {
+                query.forEach(((doc) => {
 
-                
-                var arrid = [];
-                if (objb.length > 0 ) {
-                    for (let index = 0; index < objb.length; index++) {
+                    let mybev = doc.data().beverages;
+                    //mydur = doc.data().duration;
 
-                        firebase.db.collection("tbluserprofile").
-                            where("beverages", "array-contains", objb[index]).get().then((query) => {
-                                query.forEach(((bev) => {
-                                    //console.log(bev.data().beverages);
-                                    //console.log(bev.data().uid);
-                                    arrid.push(bev.data().uid);
-                                }))
-                            })
+                    if (mybev.length > 0) {
+                        for (let index = 0; index < mybev.length; index++) {
+
+                            firebase.db.collection("tbluserprofile").
+                                where("beverages", "array-contains", mybev[index]).get().then((query) => {
+                                    query.forEach(((bev) => {
+
+
+                                        console.log(bev.data().uid);
+                                        let message = { task: bev.data().uid, id: doc.id };
+                                        this.setState({ list: [message].concat(this.state.list) });
+
+
+                                        //this.setState({ list: [objuser].concat(this.state.list) });
+                                        //arrid.unshift(bev.data().uid);
+                                        //let pid = { id: bev.data().uid}
+                                        //this.setState({ arr: [pid].concat(this.state.arr), })
+                                    }))
+                                })
+                        }
                     }
-                }
-                
-                if (obdu.length > 0) {
-                    for (let index = 0; index < obdu.length; index++) {
-
-                        firebase.db.collection("tbluserprofile").
-                            where("duration", "array-contains", obdu[index]).get().then((query) => {
-                                query.forEach(((dur) => {
-                                    //console.log(bev.data().beverages);
-                                    //console.log(dur.data().uid);
-                                    arrid.push(dur.data().uid);
-                                }))
-                            })
-                    }
-                }
-
-                console.log(arrid);
-                
-
-                
-                //let dup = [...new Set(arrid)];
-                //var dd = arrid;
-               // console.log(dd);
-               
 
 
-            }))
-        })
 
-    }
+
+                }))
+            })
+
+
+        //this.setState({ mybeverages: mybev, duration: mydur, meetinglist: true});
+
+this.setState({meetinglist:true });
+}
+
 
 }
 
+showMeetingList(){
+
+    const {list} = this.state;
+
+
+    console.log(list, "showMeetingList");
+    }
+    
 
 
 
@@ -464,7 +461,7 @@ getAllusers(){
     render() {
 
 
-        const { currentuser, p1, p2, p3 } = this.state
+        const { currentuser, p1, p2, p3 , meetinglist } = this.state
         const dashboardsrc = localStorage.getItem("dashboard");
         //console.log(currentuser ," render2");
         return (<div> <h1>Dashboard!!! </h1> 
@@ -484,8 +481,12 @@ getAllusers(){
 
             
             {dashboardsrc === "showmeeting" ? <div>
-             “You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.  
-             <button onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button> 
+
+                {meetinglist ? <div>
+                    {this.showMeetingList()}
+                </div> : <div>  “You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
+             <button onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button> </div>}
+             
               </div> : <div> 
 
                     {p1 && !p2 && !p3 && this.profileScreen1()}
