@@ -2,8 +2,26 @@ import React, { Component } from 'react';
 import swal from 'sweetalert';
 import * as firebase from '../../config/firebase'
 import { Link } from "react-router-dom";
+import accepting from "../../images/accept.png"
+import rejecting from "../../images/deny.png"
+import Cards, { Card , action } from 'react-swipe-card'
 
 //const providerx = firebase.provider;
+const data = ['Alexandre', 'Thomas', 'Lucien']
+
+const Wrapper = () => {
+    return (
+        <Cards onEnd={action('end')} className='master-root'>
+            {data.map(item =>
+                <Card
+                    onSwipeLeft={action('swipe left')}
+                    onSwipeRight={action('swipe right')}>
+                    <h2>{item}</h2>
+                </Card>
+            )}
+        </Cards>
+    )
+}
 
 class Dashboard extends Component {
 
@@ -431,7 +449,7 @@ this.setState({meetinglist:true });
         let ids = localStorage.getItem("uniqueid");
         const idarry = ids.split(',');
 
-        const data = firebase.db.collection("tbluserprofile").get();
+        //const data = firebase.db.collection("tbluserprofile").get();
 
         
 
@@ -458,28 +476,79 @@ this.setState({meetinglist:true });
         //     })
 
 
-        console.log(data);
-        return (<div>this is get meeting list
-            
-        {
-                data.then((query) => {
-                    query.forEach(((bev) => {
+        
+        console.log(idarry);
+        console.log(idarry.length);
+        return(<div>this is get meeting list
 
-                        console.log(bev);
+            {idarry.map((element,index) => {
+                return(<li>{element}</li>)
+            })}
 
-                    }))
-                })}
     
+            <div className="scrollmenu">
+            <div class="gallery">
+                <a>
+                        <img className="imggal" src="https://www.w3schools.com/css/5terre.jpg" alt="5Terre" width="600" height="400" />
+                </a>
+                    <div class="desc">
+                        <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
+                        <div className="col-md-4 text-center"> <p>Mohsin Ali <br /> FACEBOOK</p> </div>
+                        <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
+                    </div>
+            </div>
+
+            <div class="gallery">
+                <a>
+                        <img className="imggal" src="https://www.w3schools.com/css/img_forest.jpg" alt="Forest" width="600" height="400" />
+                </a>
+                    <div class="desc">
+                        <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
+                        <div className="col-md-4 text-center"> <p>Mohsin Ali <br /> FACEBOOK</p> </div>
+                        <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
+                    </div>
+            </div>
+
+            <div class="gallery">
+                <a >
+                        <img className="imggal" src="https://www.w3schools.com/css/img_lights.jpg" alt="Northern Lights" width="600" height="400" />
+                </a>
+                    <div class="desc">
+                        <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
+                        <div className="col-md-4 text-center"> <p>Mohsin Ali <br /> FACEBOOK</p> </div>
+                        <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
+                    </div>
+            </div>
+
+            <div class="gallery">
+                <a >
+                        <img className="imggal" src="https://www.w3schools.com/css/img_mountains.jpg" alt="Mountains" width="600" height="400" />
+                </a>
+                    <div class="desc">
+                        <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
+                        <div className="col-md-4 text-center"> <p>Mohsin Ali <br/> FACEBOOK</p> </div>
+                        <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
+                    </div>
+                    
+            </div>  
+
+
+
+
+  
+
+           
+            </div>
+
+            
+            <Wrapper />
+
+          
+
+
+
+           
         </div>);
-        // console.log(arrobj);
-        // console.log(arrobj.length);
-        // return(<div>this is get meeting list
-
-        //     {arrobj.map((element,index) => {
-        //         return(<li>{element}</li>)
-        //     })}
-
-        // </div>);
     }
 
 getMeetingList(){

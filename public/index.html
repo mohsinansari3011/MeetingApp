@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
     <meta name="theme-color" content="#000000">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -10,7 +11,49 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.5.3/firebase.js"></script>
 
+<style>
+  div.gallery {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 100%;
+  }
 
+  div.gallery:hover {
+    border: 1px solid #777;
+  }
+
+  .imggal {
+    width: 100%;
+    height: auto;
+  }
+
+
+  div.desc {
+    padding: 15px;
+    text-align: left;
+  }
+
+
+ div.scrollmenu {
+    
+        display: inline-flex;
+    white-space: nowrap;
+    
+}
+
+div.scrollmenu a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+}
+
+div.scrollmenu a:hover {
+    background-color: #777;
+}
+</style>
 
     <!--
       manifest.json provides metadata used when your web app is added to the
