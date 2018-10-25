@@ -10,6 +10,7 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.5",
     "react-swipe-deck": "^0.1.17",
+    "react-swipeable-cards": "^1.0.6",
     "sweetalert": "^2.1.0"
   },
   "scripts": {

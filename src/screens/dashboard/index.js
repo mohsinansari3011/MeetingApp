@@ -4,24 +4,8 @@ import * as firebase from '../../config/firebase'
 import { Link } from "react-router-dom";
 import accepting from "../../images/accept.png"
 import rejecting from "../../images/deny.png"
-import Cards, { Card , action } from 'react-swipe-card'
+import { Card, CardWrapper } from 'react-swipeable-cards';
 
-//const providerx = firebase.provider;
-const data = ['Alexandre', 'Thomas', 'Lucien']
-
-const Wrapper = () => {
-    return (
-        <Cards onEnd={action('end')} className='master-root'>
-            {data.map(item =>
-                <Card
-                    onSwipeLeft={action('swipe left')}
-                    onSwipeRight={action('swipe right')}>
-                    <h2>{item}</h2>
-                </Card>
-            )}
-        </Cards>
-    )
-}
 
 class Dashboard extends Component {
 
@@ -441,6 +425,9 @@ this.setState({meetinglist:true });
 }
 
 
+
+
+
     showMeetingList(){
 
         this.getMeetingList();
@@ -481,67 +468,18 @@ this.setState({meetinglist:true });
         console.log(idarry.length);
         return(<div>this is get meeting list
 
+            <CardWrapper>
+                {this.renderCards()}
+            </CardWrapper>
+
+
             {idarry.map((element,index) => {
                 return(<li>{element}</li>)
             })}
 
     
-            <div className="scrollmenu">
-            <div class="gallery">
-                <a>
-                        <img className="imggal" src="https://www.w3schools.com/css/5terre.jpg" alt="5Terre" width="600" height="400" />
-                </a>
-                    <div class="desc">
-                        <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
-                        <div className="col-md-4 text-center"> <p>Mohsin Ali <br /> FACEBOOK</p> </div>
-                        <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
-                    </div>
-            </div>
-
-            <div class="gallery">
-                <a>
-                        <img className="imggal" src="https://www.w3schools.com/css/img_forest.jpg" alt="Forest" width="600" height="400" />
-                </a>
-                    <div class="desc">
-                        <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
-                        <div className="col-md-4 text-center"> <p>Mohsin Ali <br /> FACEBOOK</p> </div>
-                        <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
-                    </div>
-            </div>
-
-            <div class="gallery">
-                <a >
-                        <img className="imggal" src="https://www.w3schools.com/css/img_lights.jpg" alt="Northern Lights" width="600" height="400" />
-                </a>
-                    <div class="desc">
-                        <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
-                        <div className="col-md-4 text-center"> <p>Mohsin Ali <br /> FACEBOOK</p> </div>
-                        <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
-                    </div>
-            </div>
-
-            <div class="gallery">
-                <a >
-                        <img className="imggal" src="https://www.w3schools.com/css/img_mountains.jpg" alt="Mountains" width="600" height="400" />
-                </a>
-                    <div class="desc">
-                        <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
-                        <div className="col-md-4 text-center"> <p>Mohsin Ali <br/> FACEBOOK</p> </div>
-                        <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
-                    </div>
-                    
-            </div>  
-
-
-
-
-  
-
-           
-            </div>
-
+       
             
-            <Wrapper />
 
           
 
@@ -549,6 +487,57 @@ this.setState({meetinglist:true });
 
            
         </div>);
+    }
+
+
+
+
+
+    onSwipe(data) {
+        console.log("I was swiped.");
+    }
+
+    onSwipeLeft(data) {
+        console.log("I was swiped left.");
+    }
+
+    onSwipeRight(data) {
+        console.log("I was swiped right.");
+        swal("Meet","Do you want to meet MOHSIN","info")
+    }
+
+    onDoubleTap(data) {
+        console.log("I was double tapped.");
+    }
+    renderCards() {
+        //let data = ["first", "second", "third"];
+        let ids = localStorage.getItem("uniqueid");
+        const idarry = ids.split(',');
+
+        return idarry.map((d) => {
+            return (
+                <Card
+                    key={d}
+                    onSwipe={this.onSwipe.bind(this)}
+                    onSwipeLeft={this.onSwipeLeft.bind(this)}
+                    onSwipeRight={this.onSwipeRight.bind(this)}
+                    onDoubleTap={this.onDoubleTap.bind(this)}>
+                   
+
+                    <div class="gallery">
+                        <a>
+                            <img className="imggal" src="https://www.w3schools.com/css/5terre.jpg" alt="5Terre" width="600" height="400" />
+                        </a>
+                        <div class="desc">
+                            <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
+                            <div className="col-md-4 text-center"> <p>Mohsin Ali <br /> FACEBOOK</p> </div>
+                            <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
+                        </div>
+                    </div>
+
+        </Card>
+            );
+        });
     }
 
 getMeetingList(){
