@@ -407,33 +407,9 @@ getAllusers(){
                 query.forEach(((doc) => {
 
                     let mybev = doc.data().beverages;
+                    let mydur = doc.data().duration;
                     //mydur = doc.data().duration;
-
-                    if (mybev.length > 0) {
-                        for (let index = 0; index < mybev.length; index++) {
-
-                            firebase.db.collection("tbluserprofile").
-                                where("beverages", "array-contains", mybev[index]).get().then((query) => {
-                                    query.forEach(((bev) => {
-
-
-                                        console.log(bev.data().uid);
-                                        let message = { task: bev.data().uid, id: doc.id };
-                                        this.setState({ list: [message].concat(this.state.list) });
-
-
-                                        //this.setState({ list: [objuser].concat(this.state.list) });
-                                        //arrid.unshift(bev.data().uid);
-                                        //let pid = { id: bev.data().uid}
-                                        //this.setState({ arr: [pid].concat(this.state.arr), })
-                                    }))
-                                })
-                        }
-                    }
-
-
-
-
+                    this.setState({ beverages : mybev, duration:mydur });
                 }))
             })
 
@@ -446,16 +422,142 @@ this.setState({meetinglist:true });
 
 }
 
-showMeetingList(){
 
-    const {list} = this.state;
+    showMeetingList(){
+
+        this.getMeetingList();
+
+        
+        let ids = localStorage.getItem("uniqueid");
+        const idarry = ids.split(',');
+
+        const data = firebase.db.collection("tbluserprofile").get();
+
+        
+
+        // firebase.db.collection("tbluserprofile").get().then((query) => {
+        //         query.forEach(((bev) => {
+
+        //             if (idarry.includes(bev.data().uid)) {
+                       
+                        
+                        
+        //                 return (<div>this is get meeting list
+                       
+                            
+
+        //                 </div>);
 
 
-    console.log(list, "showMeetingList");
+        //             }
+                    
+                    
+                   
+
+        //         }))
+        //     })
+
+
+        console.log(data);
+        return (<div>this is get meeting list
+            
+        {
+                data.then((query) => {
+                    query.forEach(((bev) => {
+
+                        console.log(bev);
+
+                    }))
+                })}
+    
+        </div>);
+        // console.log(arrobj);
+        // console.log(arrobj.length);
+        // return(<div>this is get meeting list
+
+        //     {arrobj.map((element,index) => {
+        //         return(<li>{element}</li>)
+        //     })}
+
+        // </div>);
     }
+
+getMeetingList(){
+
+    const { beverages, duration} = this.state;
+
+
+    //console.log(beverages, "showMeetingList");
+    //console.log(beverages.length, "showMeetingList");
+
+    let bevarr = [];
+    if (beverages.length > 0) {
+        for (let index = 0; index < beverages.length; index++) {
+
+            firebase.db.collection("tbluserprofile").
+                where("beverages", "array-contains", beverages[index]).get().then((query) => {
+                    query.forEach(((bev) => {
+
+
+                        //console.log(bev.data().uid);
+                        bevarr.push(bev.data().uid);
+                        localStorage.setItem("mybev", bevarr);
+                     
+                    }))
+                })
+        }
+    }
+
+
+    let durarr = [];
+    if (duration.length > 0) {
+        for (let index = 0; index < duration.length; index++) {
+
+            firebase.db.collection("tbluserprofile").
+                where("duration", "array-contains", duration[index]).get().then((query) => {
+                    query.forEach(((bev) => {
+
+
+                        //console.log(bev.data().uid);
+                        durarr.push(bev.data().uid);
+                        localStorage.setItem("mydur", durarr);
+                     
+                    }))
+                })
+        }
+    }
+
+
+
+
+   
+        // this will filter and show data for meeting!!
+                setTimeout(() => {
+
+                    //console.log("showMeetingData");
+                    let mydur = localStorage.getItem("mydur");
+                    let mybev = localStorage.getItem("mybev");
+
+                    if (mydur != null && mybev != null) {
+
+
+                        //filter given data firebase!!!
+                        let arruid = [... new Set(mydur.split(','))].concat([... new Set(mybev.split(','))]);
+                        let uniqueid = [... new Set(arruid)];
+
+                        if (uniqueid.length > 0) {
+                            localStorage.removeItem("mydur");
+                            localStorage.removeItem("mybev");
+                            localStorage.setItem("uniqueid", uniqueid);
+                            console.log(uniqueid);
+                        }
+                    }
+
+                }, 3000);
     
 
 
+    }
 
     
     render() {
@@ -483,8 +585,8 @@ showMeetingList(){
             {dashboardsrc === "showmeeting" ? <div>
 
                 {meetinglist ? <div>
-                    {this.showMeetingList()}
-                </div> : <div>  “You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
+                    {this.showMeetingList()} 
+                </div> : <div>“You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
              <button onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button> </div>}
              
               </div> : <div> 
