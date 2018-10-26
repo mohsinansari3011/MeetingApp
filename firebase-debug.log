@@ -1,0 +1,42 @@
+[debug] [2018-10-26T16:14:11.114Z] ----------------------------------------------------------------------
+[debug] [2018-10-26T16:14:11.114Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Mohsin\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase init
+[debug] [2018-10-26T16:14:11.130Z] CLI Version:   5.0.1
+[debug] [2018-10-26T16:14:11.130Z] Platform:      win32
+[debug] [2018-10-26T16:14:11.130Z] Node Version:  v8.12.0
+[debug] [2018-10-26T16:14:11.130Z] Time:          Fri Oct 26 2018 21:14:11 GMT+0500 (Pakistan Standard Time)
+[debug] [2018-10-26T16:14:11.130Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-10-26T16:14:11.277Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-10-26T16:14:11.277Z] > authorizing via signed-in user
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\Mohsin\Documents\GitHub\MeetingApp
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2018-10-26T16:14:24.158Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-10-26T16:14:24.158Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2018-10-26T16:14:25.594Z] <<< HTTP RESPONSE 200
+[debug] [2018-10-26T16:14:25.710Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects  
+ 
+[debug] [2018-10-26T16:14:27.283Z] <<< HTTP RESPONSE 200
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 
