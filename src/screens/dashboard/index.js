@@ -411,20 +411,48 @@ getAllusers(){
                     let mybev = doc.data().beverages;
                     let mydur = doc.data().duration;
                     //mydur = doc.data().duration;
-                    this.setState({ beverages : mybev, duration:mydur });
+                    this.setState({ beverages: mybev, duration: mydur, meetinglist: true });
                 }))
             })
 
 
         //this.setState({ mybeverages: mybev, duration: mydur, meetinglist: true});
 
-this.setState({meetinglist:true });
+
+       
+
+
+
 }
 
-
+    console.log(currentuser, " ***** currentuser");
 }
 
+    componentDidUpdate() {
 
+        console.log("componentDidUpdate");
+
+        if (localStorage.getItem("uniqueid")) {
+            //this.getMeetingList();
+            //this.setState({ meetinglist: true });
+            console.log("uniqueid found");
+        }
+    }
+
+    componentWillUnmount(){
+
+        if (localStorage.getItem("uniqueid")) {
+            //this.getMeetingList();
+            //this.setState({ meetinglist: true });
+            console.log("uniqueid found , componentWillUnmount");
+        }
+    }
+
+    // shouldComponentUpdate(){
+    //     console.log("shouldComponentUpdate");
+
+        
+    // }
 
 
 
@@ -432,7 +460,13 @@ this.setState({meetinglist:true });
 
         this.getMeetingList();
 
+        console.log("after getMeetingList");
         
+setTimeout(() => {
+    
+
+
+        if (localStorage.getItem("uniqueid")) {
         let ids = localStorage.getItem("uniqueid");
         const idarry = ids.split(',');
 
@@ -464,7 +498,7 @@ this.setState({meetinglist:true });
 
 
         
-        console.log(idarry);
+            console.log(idarry, " *** idarry");
         console.log(idarry.length);
         return(<div>this is get meeting list
 
@@ -487,7 +521,12 @@ this.setState({meetinglist:true });
 
            
         </div>);
+    }else{
+        console.log("unique not found")
     }
+}, 10000);
+
+}
 
 
 
@@ -592,7 +631,7 @@ getMeetingList(){
         // this will filter and show data for meeting!!
                 setTimeout(() => {
 
-                    //console.log("showMeetingData");
+                    console.log("showMeetingData");
                     let mydur = localStorage.getItem("mydur");
                     let mybev = localStorage.getItem("mybev");
 
@@ -609,9 +648,12 @@ getMeetingList(){
                             localStorage.setItem("uniqueid", uniqueid);
                             console.log(uniqueid);
                         }
+                    }else{
+                        console.log(mydur, "mydur");
+                        console.log(mybev, "mybev");
                     }
 
-                }, 3000);
+                }, 5000);
     
 
 
