@@ -43,6 +43,7 @@ class Dashboard extends Component {
             duration : [],
             gotomap :false,
             meetData : [],
+            showmapdirections :false,
         };
 
 
@@ -414,16 +415,7 @@ getAllusers(){
 
     if (currentuser) {
 
-        // firebase.db.collection("tbluserprofile").where("uid", "==", currentuser.uid).get()
-        //     .then((query) => {
-        //         query.forEach(((doc) => {
-
-        //             let mybev = doc.data().beverages;
-        //             let mydur = doc.data().duration;
-        //             //mydur = doc.data().duration;
-        //             this.setState({ beverages: mybev, duration: mydur, meetinglist: true });
-        //         }))
-        //     })
+       
 
         var meetingArray = [];
         firebase.db.collection("tbluserprofile").get()
@@ -434,51 +426,16 @@ getAllusers(){
                     });
                 }
 
-
-               
-                    
-                    //console.log(meetingArray);
-                    if (meetingArray) {
-                        this.setState({ meetData: meetingArray, meetinglist: true });
-                    }
+                if (meetingArray) {
+                    this.setState({ meetData: meetingArray, meetinglist: true });
+                }
                     
 
-               
-                
-                // query.forEach(((doc) => {
-
-                //     //let mybev = doc.data().beverages;
-                //     //let mydur = doc.data().duration;
-
-                //     console.log(doc.data());
-                   
-                //     //mydur = doc.data().duration;
-                //     this.setState({ meetingdata: doc, meetinglist: true });
-                // }))
             })
 
-
-        //this.setState({ mybeverages: mybev, duration: mydur, meetinglist: true});
-
-
-       
-
-
-
-}
-
-    //console.log(currentuser, " ***** currentuser");
-}
-
+    }
     
-
-    
-
-    // shouldComponentUpdate(){
-    //     console.log("shouldComponentUpdate");
-
-        
-    // }
+}
 
 
 
@@ -494,7 +451,7 @@ getAllusers(){
             return (
                 <Card
                     key={doc.uid}
-                    // onSwipe={this.onSwipe.bind(this, doc.uid)}
+                    //onSwipe={this.onSwipe.bind(this, doc.uid)}
                     onSwipeLeft={this.onSwipeLeft.bind(this)}
                     onSwipeRight={this.onSwipeRight.bind(this, "asdasdas")}
                     onDoubleTap={this.onDoubleTap.bind(this)}>
@@ -543,78 +500,7 @@ try {
     }
     
 
-    showMeetingList1(){
-
-        //this.getMeetingList();
-
-        console.log("after getMeetingList");
-        
-
-    
-
-
-        if (localStorage.getItem("uniqueid")) {
-        let ids = localStorage.getItem("uniqueid");
-        const idarry = ids.split(',');
-
-        //const data = firebase.db.collection("tbluserprofile").get();
-
-        
-
-        // firebase.db.collection("tbluserprofile").get().then((query) => {
-        //         query.forEach(((bev) => {
-
-        //             if (idarry.includes(bev.data().uid)) {
-                       
-                        
-                        
-        //                 return (<div>this is get meeting list
-                       
-                            
-
-        //                 </div>);
-
-
-        //             }
-                    
-                    
-                   
-
-        //         }))
-        //     })
-
-
-        
-            console.log(idarry, " *** idarry");
-        console.log(idarry.length);
-        return(<div>this is get meeting list
-
-            <CardWrapper>
-                {this.renderCards()}
-            </CardWrapper>
-
-
-            {idarry.map((element,index) => {
-                return(<li>{element}</li>)
-            })}
-
-    
-       
-            
-
-          
-
-
-
-           
-        </div>);
-    }else{
-        console.log("unique not found")
-    }
-
-
-}
-
+   
 
 
 // End Meeting list
@@ -631,128 +517,59 @@ try {
 
     onSwipeRight(data, dat) {
         console.log("I was swiped right.", dat ,  this);
-        swal("Meet", "Do you want to meet " + dat,"info")
+        //swal("Meet", "Do you want to meet " + dat,"info")
+
+        swal({
+            title: "Lets Meet People here",
+            text: "Do you want to meet !!!!",
+            icon: "info",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("Poof! Your Meeting has been fixed!", {
+                        icon: "success",
+                    });
+
+                    this.props.history.push("/directions");
+                    //this.setState({ showmapdirections : true});
+
+                } else {
+                    //swal("Your imaginary file is safe!");
+                }
+            });
+
+
+
     }
 
     onDoubleTap(data) {
         console.log("I was double tapped.");
     }
-    renderCards() {
-        //let data = ["first", "second", "third"];
-        let ids = localStorage.getItem("uniqueid");
-        const idarry = ids.split(',');
+    
 
-        return idarry.map((d) => {
-            return (
-                <Card
-                    key={d}
-                    onSwipe={this.onSwipe.bind(this)}
-                    onSwipeLeft={this.onSwipeLeft.bind(this)}
-                    onSwipeRight={this.onSwipeRight.bind(this)}
-                    onDoubleTap={this.onDoubleTap.bind(this)}>
-                   
-
-                    <div class="gallery">
-                        <a>
-                            <img className="imggal" src="https://www.w3schools.com/css/5terre.jpg" alt="5Terre" width="600" height="400" />
-                        </a>
-                        <div class="desc">
-                            <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
-                            <div className="col-md-4 text-center"> <p>Mohsin Ali <br /> FACEBOOK</p> </div>
-                            <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
-                        </div>
-                    </div>
-
-        </Card>
-            );
-        });
-    }
-
-getMeetingList(){
-
-    const { beverages, duration} = this.state;
-
-
-    //console.log(beverages, "showMeetingList");
-    //console.log(beverages.length, "showMeetingList");
-
-    let bevarr = [];
-    if (beverages.length > 0) {
-        for (let index = 0; index < beverages.length; index++) {
-
-            firebase.db.collection("tbluserprofile").
-                where("beverages", "array-contains", beverages[index]).get().then((query) => {
-                    query.forEach(((bev) => {
-
-
-                        //console.log(bev.data().uid);
-                        bevarr.push(bev.data().uid);
-                        localStorage.setItem("mybev", bevarr);
-                     
-                    }))
-                })
-        }
-    }
-
-
-    let durarr = [];
-    if (duration.length > 0) {
-        for (let index = 0; index < duration.length; index++) {
-
-            firebase.db.collection("tbluserprofile").
-                where("duration", "array-contains", duration[index]).get().then((query) => {
-                    query.forEach(((bev) => {
-
-
-                        //console.log(bev.data().uid);
-                        durarr.push(bev.data().uid);
-                        localStorage.setItem("mydur", durarr);
-                     
-                    }))
-                })
-        }
-    }
-
-
-
-
-   
-        // this will filter and show data for meeting!!
-                setTimeout(() => {
-
-                    console.log("showMeetingData");
-                    let mydur = localStorage.getItem("mydur");
-                    let mybev = localStorage.getItem("mybev");
-
-                    if (mydur != null && mybev != null) {
-
-
-                        //filter given data firebase!!!
-                        let arruid = [... new Set(mydur.split(','))].concat([... new Set(mybev.split(','))]);
-                        let uniqueid = [... new Set(arruid)];
-
-                        if (uniqueid.length > 0) {
-                            localStorage.removeItem("mydur");
-                            localStorage.removeItem("mybev");
-                            localStorage.setItem("uniqueid", uniqueid);
-                            console.log(uniqueid);
-                        }
-                    }else{
-                        console.log(mydur, "mydur");
-                        console.log(mybev, "mybevnpm");
-                    }
-
-                }, 5000);
     
 
 
-    }
+ShowMapDirections(){
 
-    
+
+    return(
+        <div>
+
+            this is show map ShowMapDirections
+        </div>
+
+    );
+}
+
+
+
     render() {
 
 
-        const { currentuser, p1, p2, p3 , meetinglist } = this.state
+        const { currentuser, p1, p2, p3, meetinglist, showmapdirections } = this.state
         const dashboardsrc = localStorage.getItem("dashboard");
         //console.log(currentuser ," render2");
         return (<div> <h1>Dashboard!!! </h1> 
@@ -771,7 +588,11 @@ getMeetingList(){
             }
 
             
-            {dashboardsrc === "showmeeting" ? <div>
+            {
+                !showmapdirections ?
+                <div>
+
+                {dashboardsrc === "showmeeting" ? <div>
 
                 {meetinglist ? <div>
                     {this.showMeetingList()} 
@@ -784,7 +605,12 @@ getMeetingList(){
                     {!p1 && p2 && !p3 && this.profileScreen2()}
                     {!p1 && !p2 && p3 && this.profileScreen3()}
 
-              </div>}
+              </div>
+                }
+                
+                    </div> : <div> {this.ShowMapDirections()} </div>
+            
+            }
     
             
                 <button onClick={this.LogoutFromAccount.bind(this)} type="submit" className="btn btn-primary">Logout</button>

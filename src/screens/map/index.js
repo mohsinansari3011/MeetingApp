@@ -168,7 +168,7 @@ const MyMapComponent = withScriptjs(withGoogleMap((props) =>
                 position={{ lat: props.coords.latitude, lng: props.coords.longitude }}
                 draggable={true}
                 onDragEnd={position => {
-                    props.updateCoords({ latitude: position.latLng.lat(), longitude: position.latLng.lng() })
+                props.updateCoords({ latitude: position.latLng.lat(), longitude: position.latLng.lng() })
                 }}
             />}
     </GoogleMap>
