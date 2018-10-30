@@ -7,6 +7,15 @@ import rejecting from "../../images/deny.png"
 import { Card, CardWrapper } from 'react-swipeable-cards';
 
 
+
+class MyEndCard extends Component {
+    render() {
+        return (
+            <div>You Finished Swiping!</div>
+        );
+    }
+}
+
 class Dashboard extends Component {
 
 
@@ -33,6 +42,7 @@ class Dashboard extends Component {
             beverages : [],
             duration : [],
             gotomap :false,
+            meetData : [],
         };
 
 
@@ -404,35 +414,146 @@ getAllusers(){
 
     if (currentuser) {
 
-        firebase.db.collection("tbluserprofile").where("uid", "==", currentuser.uid).get()
-            .then((query) => {
-                query.forEach(((doc) => {
+        // firebase.db.collection("tbluserprofile").where("uid", "==", currentuser.uid).get()
+        //     .then((query) => {
+        //         query.forEach(((doc) => {
 
-                    let mybev = doc.data().beverages;
-                    let mydur = doc.data().duration;
-                    //mydur = doc.data().duration;
-                    this.setState({ beverages : mybev, duration:mydur });
-                }))
+        //             let mybev = doc.data().beverages;
+        //             let mydur = doc.data().duration;
+        //             //mydur = doc.data().duration;
+        //             this.setState({ beverages: mybev, duration: mydur, meetinglist: true });
+        //         }))
+        //     })
+
+        var meetingArray = [];
+        firebase.db.collection("tbluserprofile").get()
+            .then((query) => {
+                if (query) {
+                    query.forEach((doc) => {
+                        meetingArray.push(doc.data());
+                    });
+                }
+
+
+               
+                    
+                    //console.log(meetingArray);
+                    if (meetingArray) {
+                        this.setState({ meetData: meetingArray, meetinglist: true });
+                    }
+                    
+
+               
+                
+                // query.forEach(((doc) => {
+
+                //     //let mybev = doc.data().beverages;
+                //     //let mydur = doc.data().duration;
+
+                //     console.log(doc.data());
+                   
+                //     //mydur = doc.data().duration;
+                //     this.setState({ meetingdata: doc, meetinglist: true });
+                // }))
             })
 
 
         //this.setState({ mybeverages: mybev, duration: mydur, meetinglist: true});
 
-this.setState({meetinglist:true });
+
+       
+
+
+
 }
 
-
+    //console.log(currentuser, " ***** currentuser");
 }
 
+    
 
+    
+
+    // shouldComponentUpdate(){
+    //     console.log("shouldComponentUpdate");
+
+        
+    // }
 
 
 
     showMeetingList(){
 
-        this.getMeetingList();
+        const { meetData, currentuser} = this.state;
+        
+        //console.log(meetData);
+
+        const ShowMeetingArray = meetData.map((doc) => {
+            
+           
+            return (
+                <Card
+                    key={doc.uid}
+                    // onSwipe={this.onSwipe.bind(this, doc.uid)}
+                    onSwipeLeft={this.onSwipeLeft.bind(this)}
+                    onSwipeRight={this.onSwipeRight.bind(this, "asdasdas")}
+                    onDoubleTap={this.onDoubleTap.bind(this)}>
+
+
+                    <div id={doc.uid} class="gallery">
+                        <a>
+                            <img className="imggal" src={doc.image1} alt="5Terre" width="600" height="400" />
+                        </a>
+                        <div class="desc">
+                            <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
+                            <div className="col-md-4 text-center"> <p> {doc.displayname} <br /> {doc.email}</p> </div>
+                            <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
+                        </div>
+                    </div>
+
+                </Card>
+            );
 
         
+
+
+       });
+    
+
+try {
+    return (<div>this is get meeting list   <CardWrapper addEndCard={this.getEndCard.bind(this)}>
+        {ShowMeetingArray}
+    </CardWrapper>   </div>);
+
+} catch (error) {
+    console.log(error);
+}
+
+       
+       
+            
+      
+    }
+
+
+    getEndCard() {
+        return (
+            <MyEndCard />
+        );
+    }
+    
+
+    showMeetingList1(){
+
+        //this.getMeetingList();
+
+        console.log("after getMeetingList");
+        
+
+    
+
+
+        if (localStorage.getItem("uniqueid")) {
         let ids = localStorage.getItem("uniqueid");
         const idarry = ids.split(',');
 
@@ -464,7 +585,7 @@ this.setState({meetinglist:true });
 
 
         
-        console.log(idarry);
+            console.log(idarry, " *** idarry");
         console.log(idarry.length);
         return(<div>this is get meeting list
 
@@ -487,23 +608,30 @@ this.setState({meetinglist:true });
 
            
         </div>);
+    }else{
+        console.log("unique not found")
     }
 
 
+}
 
 
 
-    onSwipe(data) {
-        console.log("I was swiped.");
-    }
+// End Meeting list
+
+
+
+    // onSwipe(data) {
+    //     console.log("I was swiped.");
+    // }
 
     onSwipeLeft(data) {
         console.log("I was swiped left.");
     }
 
-    onSwipeRight(data) {
-        console.log("I was swiped right.");
-        swal("Meet","Do you want to meet MOHSIN","info")
+    onSwipeRight(data, dat) {
+        console.log("I was swiped right.", dat ,  this);
+        swal("Meet", "Do you want to meet " + dat,"info")
     }
 
     onDoubleTap(data) {
@@ -592,7 +720,7 @@ getMeetingList(){
         // this will filter and show data for meeting!!
                 setTimeout(() => {
 
-                    //console.log("showMeetingData");
+                    console.log("showMeetingData");
                     let mydur = localStorage.getItem("mydur");
                     let mybev = localStorage.getItem("mybev");
 
@@ -609,9 +737,12 @@ getMeetingList(){
                             localStorage.setItem("uniqueid", uniqueid);
                             console.log(uniqueid);
                         }
+                    }else{
+                        console.log(mydur, "mydur");
+                        console.log(mybev, "mybevnpm");
                     }
 
-                }, 3000);
+                }, 5000);
     
 
 
