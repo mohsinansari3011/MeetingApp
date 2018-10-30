@@ -46,6 +46,13 @@ class directionscreen extends Component {
                 this.setState({ currentuser: user });
                 this.setPosition();
                 console.log("componentDidMount");
+
+                setTimeout(() => {
+                    this.ExploreApiCoords();
+                }, 2000);
+              
+               
+
             } else {
                 console.info('Must be authenticated');
                 this.props.history.push('/');
@@ -57,9 +64,19 @@ class directionscreen extends Component {
 
 
     }
+
+
+    componentWillMount(){
+
+        //console.log("componentWillMount");
+       
+    }
     componentDidUpdate() {
-        console.log("componentDidUpdate");
-        this.ExploreApiCoords();
+        //console.log("componentDidUpdate");
+
+        
+       
+        
     }
 
     // shouldComponentUpdate(){
@@ -70,7 +87,7 @@ class directionscreen extends Component {
 
     ExploreApiCoords() {
         const { coords } = this.state;
-        //console.log("ExploreApiCoords", coords)
+        console.log("ExploreApiCoords", coords)
         if (coords) {
             let locationNear = [];
             var i = 1;
@@ -88,7 +105,7 @@ class directionscreen extends Component {
                             let lng = explore.venue.location.lng;
                           
 
-                          locationNear.push({ coords : { lat, lng } } );
+                          locationNear.push({ Coordinates: { latitude: lat, longitude: lng } } );
                             //console.log(explore.venue.id, explore.venue.name, explore.venue.location.address
                             //, explore.venue.location.lat, explore.venue.location.lng);
                           i++;
@@ -98,7 +115,7 @@ class directionscreen extends Component {
                 });
 
             //console.log(locationNear, " locationNear");
-            //this.setState({ locationNear});
+            this.setState({ locations : locationNear});
         }
 
 
@@ -109,18 +126,28 @@ class directionscreen extends Component {
 
 
     profileScreen4() {
-        const { coords, locationNear } = this.state;
+        const { coords, locations} = this.state;
        
-        console.log(locationNear);
+        //console.log(coords," profileScreen4");
+        console.log(locations, " locationNearprofileScreen4");
+
+        if (locations) {
+            locations.map(explore => {
+                console.log(explore, " item");
+            })
+            }
+      
+
         return (<div>
 
             {coords && <MyMapComponent
                 isMarkerShown
-                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=geometry,drawing,places"
                 loadingElement={<div style={{ height: `80%`, width: `100%` }} />}
                 containerElement={<div style={{ height: `80vh`, width: `100vh` }} />}
                 mapElement={<div style={{ height: `80%`, width: `100%` }} />}
                 coords={coords}
+                //coordslocations={locationNear}
             />}
 
 
@@ -137,10 +164,10 @@ class directionscreen extends Component {
 
     render() {
 
-        const { coords } = this.state;
+        //const { locationNear } = this.state;
         //console.log("render", coords);
         
-        return (<div> {coords ? this.profileScreen4() : <div>this is next</div> }</div>)
+        return (<div> {this.profileScreen4() }</div>)
     }
 
 
@@ -152,17 +179,17 @@ class directionscreen extends Component {
 const MyMapComponent = withScriptjs(withGoogleMap((props) =>
 
     
-    <GoogleMap
+    <GoogleMap 
         defaultZoom={14}
         center={{ lat: props.coords.latitude, lng: props.coords.longitude }}
     >
-        {console.log(localStorage.getItem("neardata"))}
-        {/* { props.coords.map(data => {  
+        {/* {console.log(props.coordslocations, " prop1")}
+        {props.coordslocations ? props.coordslocations.map(data => {  
             { console.log(data , " prop") }
 
             
     
-        })} */}
+        }): <div>aasdasd</div> } */}
 
        
        
