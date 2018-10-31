@@ -239,11 +239,13 @@ onChange = date => this.setState({ date })
 onsendRequest()
 {
 
-    swal("info","Send the request?","info");
+    const { date } = this.state;
+
+    //swal("info","Send the request?","info");
 
     swal({
         title: "Send the request?",
-        text: "Do you want to Send the request? !!!!",
+        text: "Do you want to Send the request? " + date +" !!!!",
         icon: "info",
         buttons: ["Cancel", "Yes"],
     })

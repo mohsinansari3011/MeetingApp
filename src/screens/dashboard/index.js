@@ -441,13 +441,13 @@ class Dashboard extends Component {
         console.log("I was swiped left.");
     }
 
-    onSwipeRight(data) {
-        console.log("I was swiped right.",  data);
+    onSwipeRight(displayname , uid) {
+        console.log("I was swiped right.", displayname);
         //swal("Meet", "Do you want to meet " + dat,"info")
 
         swal({
             title: "Lets Meet People here",
-            text: "Do you want to meet " + data +" !!!!",
+            text: "Do you want to meet " + displayname +" !!!!",
             icon: "info",
             buttons: ["No", "Yes"],
 
@@ -458,6 +458,8 @@ class Dashboard extends Component {
                         icon: "success",
                     });
 
+                    localStorage.setItem("matchername", displayname );
+                    localStorage.setItem("matcheruid", uid);
                     this.props.history.push("/directions");
                     //this.setState({ showmapdirections : true});
 
@@ -488,7 +490,7 @@ class Dashboard extends Component {
             return (
                 <Card
                     key={doc.uid}
-                    // onSwipe={this.onSwipe.bind(this, doc.displayname)}
+                    //onSwipe={this.onSwipe.bind(this, doc.displayname)}
                     onSwipeLeft={this.onSwipeLeft.bind(this)}
                     onSwipeRight={this.onSwipeRight.bind(this, doc.displayname, doc.uid)}
                     onDoubleTap={this.onDoubleTap.bind(this)}>
