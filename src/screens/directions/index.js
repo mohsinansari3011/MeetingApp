@@ -247,11 +247,13 @@ onsendRequest()
         icon: "info",
         buttons: ["Cancel", "Yes"],
     })
-        .then((willDelete) => {
-            if (willDelete) {
+        .then((isyes) => {
+            if (isyes) {
                 swal("Poof! Your Request has been Sent!", {
                     icon: "success",
                 });
+
+
 
                 this.props.history.push("/dashboard");
                 //this.setState({ showmapdirections : true});

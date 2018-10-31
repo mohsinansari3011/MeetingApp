@@ -25,45 +25,42 @@ class Dashboard extends Component {
         this.state = {
 
             currentuser: '',
-           
-            p1:true,
-            p2:false,
-            p3:false,
 
-            meetinglist :false,
+            p1: false,
+            p2: false,
+            p3: false,
 
-            list: [], 
-            nickname:'',
-            phonenumber:'',
-            //imagepath1: '',
-            //imagepath2: '',
-            //imagepath3: '',
-            currentimage :'image1',
-            beverages : [],
-            duration : [],
-            gotomap :false,
-            meetData : [],
-            showmapdirections :false,
+            meetinglist: false,
+
+            list: [],
+            nickname: '',
+            phonenumber: '',
+            currentimage: 'image1',
+            beverages: [],
+            duration: [],
+            gotomap: false,
+            meetData: [],
+            showmapdirections: false,
         };
 
 
-       
+
         this.NextS1 = this.NextS1.bind(this);
         this.NextS2 = this.NextS2.bind(this);
         this.BackS2 = this.BackS2.bind(this);
         this.BackS3 = this.BackS3.bind(this);
-        this.showMeetingList = this.showMeetingList.bind(this);
+        this.setMeetingListCards = this.setMeetingListCards.bind(this);
         //this.readURL = this.readURL.bind(this);
     }
 
 
 
 
-    handlenickname(e){
+    handlenickname(e) {
         //const {nickname} = this.state;
         const niname = e.target.value;
         this.setState({
-            nickname:niname,
+            nickname: niname,
         })
 
         localStorage.setItem("niname", e.target.value);
@@ -80,21 +77,20 @@ class Dashboard extends Component {
         localStorage.setItem("pnumber", e.target.value);
     }
 
-    NextS1(){
+    NextS1() {
 
         const { phonenumber, nickname } = this.state;
         console.log(nickname, " nickname ", phonenumber, " phonenumber ");
 
-if(nickname.length > 0 && phonenumber.length>0)
-{
-        this.setState({
-            p1: false,
-            p2: true,
-            p3: false,
+        if (nickname.length > 0 && phonenumber.length > 0) {
+            this.setState({
+                p1: false,
+                p2: true,
+                p3: false,
 
-        })
-    
-} else { swal("badjob!","Select Data") }
+            })
+
+        } else { swal("badjob!", "Select Data") }
     }
 
 
@@ -105,23 +101,23 @@ if(nickname.length > 0 && phonenumber.length>0)
         var img2 = localStorage.getItem("image2");
         var img3 = localStorage.getItem("image3");
 
-        if (img1 != null && img2 != null && img3 != null){
-        if (img1.length > 0 && img2.length > 0 && img3.length > 0) {
-            this.setState({
-                p1: false,
-                p2: false,
-                p3: true,
+        if (img1 != null && img2 != null && img3 != null) {
+            if (img1.length > 0 && img2.length > 0 && img3.length > 0) {
+                this.setState({
+                    p1: false,
+                    p2: false,
+                    p3: true,
 
 
-            })
+                })
 
+            } else { swal("badjob!", "Select All Images") }
         } else { swal("badjob!", "Select All Images") }
-        } else { swal("badjob!", "Select All Images") }
 
-        
+
     }
 
-   
+
 
 
 
@@ -133,7 +129,7 @@ if(nickname.length > 0 && phonenumber.length>0)
             p1: false,
             p2: true,
             p3: false,
-          
+
 
         })
     }
@@ -146,37 +142,64 @@ if(nickname.length > 0 && phonenumber.length>0)
             p1: true,
             p2: false,
             p3: false,
-           
+
 
         })
     }
 
 
 
-    
-    componentDidUpdate(){
 
-       const img1 = localStorage.getItem("image1");
-       const img2 = localStorage.getItem("image2");
-       const img3 = localStorage.getItem("image3");
+    componentDidUpdate() {
 
-       if (img1 != null && img2 != null && img3 != null) {
-           if (img1.length > 0 && img2.length > 0 && img3.length > 0) {
+        const img1 = localStorage.getItem("image1");
+        const img2 = localStorage.getItem("image2");
+        const img3 = localStorage.getItem("image3");
 
-               //console.log(document.getElementById("image1"));
-               if (document.getElementById("image1") && document.getElementById("image2") && document.getElementById("image3")){
-               document.getElementById("image1").setAttribute('src', img1);
-               document.getElementById("image2").setAttribute("src", img2);
-               document.getElementById("image3").setAttribute("src", img3)
-               }
-           }
-       }
+        if (img1 != null && img2 != null && img3 != null) {
+            if (img1.length > 0 && img2.length > 0 && img3.length > 0) {
 
-   }
+                //console.log(document.getElementById("image1"));
+                if (document.getElementById("image1") && document.getElementById("image2") && document.getElementById("image3")) {
+                    document.getElementById("image1").setAttribute('src', img1);
+                    document.getElementById("image2").setAttribute("src", img2);
+                    document.getElementById("image3").setAttribute("src", img3)
+                }
+            }
+        }
+
+    }
+
+
+
+    getCurrentUser(currentuser) {
+        if (currentuser) {
+            var currentuseruid = '';
+            firebase.db.collection("tbluserprofile").where("uid", "==", currentuser.uid).get()
+                .then((query) => {
+                    if (query) {
+                        query.forEach((doc) => {
+                            currentuseruid = doc.data().uid;
+                        });
+                    }
+                    if (currentuseruid) {
+                        this.setState({ currentuseruid: currentuseruid });
+                    } else {
+                        this.setState({ p1: true });
+                    }
+                })
+        }
+        else{
+            this.setState({ p1: true});
+        }
+    }
+
     componentDidMount() {
-     
+
         firebase.auth.onAuthStateChanged(user => {
             if (user) {
+
+                this.getCurrentUser(user);
                 this.setState({ currentuser: user });
             } else {
                 console.info('Must be authenticated');
@@ -184,103 +207,75 @@ if(nickname.length > 0 && phonenumber.length>0)
             }
         });
 
-        
-    }
-    
 
-LogoutFromAccount(){
-
-    firebase.auth.signOut().then(function () {
-        console.log('Signed Out');
-    }, function (error) {
-        console.error('Sign Out Error', error);
-    });
-
-}
-
-profileScreen1(){
-
-
-    return( <div>
-        <input type="text" value={this.state.nickname} onChange={this.handlenickname.bind(this)} placeholder="nickname"/>
-        <input type="text" value={this.state.phonenumber} onChange={this.handlephone.bind(this)} placeholder="phone number" />
-        <br /><br />
-        <input type="button" value="next" onClick={this.NextS1} />
-
-    </div>);
-}
-
-
-clickfile(e){
-    //console.log(e.target.id);
-
-    //const { currentimage} = this.state;
-
-    this.setState({
-        currentimage: e.target.id,
-    })
-
-    if (document.getElementById('fileInput1'))
-    {
-        document.getElementById('fileInput1').click();
-    }
-}
-
-
-changefile(e){
-
-    const { currentimage } = this.state;
-    //console.log(currentimage,"currentimage id");
-    //console.log(e.target.files[0]);
-
-
-  
-
-    var imgpath = '';
-    if (e.target.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            imgpath = e.target.result;
-            document.getElementById(currentimage).setAttribute('src', e.target.result)
-            localStorage.setItem(currentimage,imgpath)
-        };
-
-        
-
-        reader.readAsDataURL(e.target.files[0]);
     }
 
-    
-    // if(imgpath.length > 0){
-    // if (currentimage == "image1") {
-    //     this.setState({
-    //         imagepath1: imgpath,
-    //     });
-    // }
-    // if (currentimage == "image2") {
-    //     this.setState({
-    //         imagepath2: imgpath,
-    //     });
-    // }
-    // if (currentimage == "image3") {
-    //     this.setState({
-    //         imagepath3: imgpath,
-    //     });
-    // }
-    // }
 
-}
+    LogoutFromAccount() {
+
+        firebase.auth.signOut().then(function () {
+            console.log('Signed Out');
+        }, function (error) {
+            console.error('Sign Out Error', error);
+        });
+
+    }
+
+    profileScreen1() {
+
+
+        return (<div>
+            <input type="text" value={this.state.nickname} onChange={this.handlenickname.bind(this)} placeholder="nickname" />
+            <input type="text" value={this.state.phonenumber} onChange={this.handlephone.bind(this)} placeholder="phone number" />
+            <br /><br />
+            <input type="button" value="next" onClick={this.NextS1} />
+
+        </div>);
+    }
+
+
+    clickfile(e) {
+
+        this.setState({
+            currentimage: e.target.id,
+        })
+
+        if (document.getElementById('fileInput1')) {
+            document.getElementById('fileInput1').click();
+        }
+    }
+
+
+    changefile(e) {
+
+        const { currentimage } = this.state;
+        var imgpath = '';
+        if (e.target.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                imgpath = e.target.result;
+                document.getElementById(currentimage).setAttribute('src', e.target.result)
+                localStorage.setItem(currentimage, imgpath)
+            };
+
+
+
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    }
+
+
 
     profileScreen2() {
 
 
         return (<div>
             <h1>Select Images</h1>
-           
-            <input onChange={this.changefile.bind(this)} id="fileInput1" type="file" style={{ display:"none",}} />
+
+            <input onChange={this.changefile.bind(this)} id="fileInput1" type="file" style={{ display: "none", }} />
             <img id="image1" alt="picutre" src="http://blog.ramboll.com/fehmarnbelt/wp-content/themes/ramboll2/images/profile-img.jpg"
-                alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)}/>
-            <br/>
+                alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)} />
+            <br />
             <img id="image2" alt="picutre" src="http://blog.ramboll.com/fehmarnbelt/wp-content/themes/ramboll2/images/profile-img.jpg"
                 alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)} />
             <br />
@@ -288,32 +283,32 @@ changefile(e){
                 alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)} />
             <br />
             <input type="button" value="back" onClick={this.BackS2} />
-            <input type="button" value="next" onClick={this.NextS2}/>
+            <input type="button" value="next" onClick={this.NextS2} />
 
         </div>);
     }
 
 
 
-    selectbeverages(e){
+    selectbeverages(e) {
 
         const { beverages } = this.state;
 
         console.log("value  ", e.target.value);
-        if (e.target.checked){
+        if (e.target.checked) {
             beverages.push(e.target.value);
-        }else{
+        } else {
             var index = beverages.indexOf(e.target.value);
             if (index > -1) {
                 beverages.splice(index, 1);
             }
         }
-       
+
         this.setState({
             beverages,
         })
         console.log(beverages);
-        
+
         localStorage.setItem("beverages", beverages);
 
         this.checkbevearages();
@@ -345,27 +340,25 @@ changefile(e){
     }
 
 
-    checkbevearages(){
+    checkbevearages() {
 
         const { gotomap } = this.state;
         const duration = localStorage.getItem("duration");
         const beverages = localStorage.getItem("beverages");
-        
+
 
         //console.log("JSON.parse(duration)  ",JSON.parse(duration));
-        if (duration != null && beverages != null)
-        {
-            if(duration.length > 0 && beverages.length > 0)
-            {
+        if (duration != null && beverages != null) {
+            if (duration.length > 0 && beverages.length > 0) {
                 this.setState({
-                    gotomap : true,
+                    gotomap: true,
                 })
-            }else{
+            } else {
                 this.setState({
                     gotomap: false,
                 })
             }
-        }else{
+        } else {
             this.setState({
                 gotomap: false,
             })
@@ -381,153 +374,86 @@ changefile(e){
             <h1>Select Beverages</h1>
             <img alt="Coffee" src="https://via.placeholder.com/350x150" height="25px" width="25px" />
             <input type="checkbox" onChange={this.selectbeverages.bind(this)} value="Coffee" id="cbcoffee" /> <label htmlFor="cbcoffee">Coffee</label>
-            
+
             <img alt="Juice" src="https://via.placeholder.com/350x150" height="25px" width="25px" />
-            <input type="checkbox" onChange={this.selectbeverages.bind(this)} value="Juice" id="cbjuice" /><label htmlFor="cbjuice">Juice</label> 
-            
+            <input type="checkbox" onChange={this.selectbeverages.bind(this)} value="Juice" id="cbjuice" /><label htmlFor="cbjuice">Juice</label>
+
             <img alt="Cocktail" src="https://via.placeholder.com/350x150" height="25px" width="25px" />
             <input type="checkbox" onChange={this.selectbeverages.bind(this)} value="Cocktail" id="cbcocktail" /><label htmlFor="cbcocktail">Cocktail</label>
-            
 
-            <br/><br/>
+
+            <br /><br />
             duration of meeting
             <input type="checkbox" onChange={this.selectduration.bind(this)} value="20" id="cb20" /> <label htmlFor="cb20">20 Min </label>
             <input type="checkbox" onChange={this.selectduration.bind(this)} value="60" id="cb60" /> <label htmlFor="cb60">40 Min </label>
             <input type="checkbox" onChange={this.selectduration.bind(this)} value="120" id="cb120" /> <label htmlFor="cb120">120 Min </label>
             <br /><br />
-            <input type="button" value="back" onClick={this.BackS3}/>
+            <input type="button" value="back" onClick={this.BackS3} />
 
-            {gotomap && <Link to="/maps"> <input type="button" value="next" /> </Link> }
-            
+            {gotomap && <Link to="/maps"> <input type="button" value="next" /> </Link>}
+
 
         </div>);
     }
 
 
 
-    
-
-
-getAllusers(){
-
-
-    const { currentuser } = this.state;
-
-    if (currentuser) {
-
-       
-
-        var meetingArray = [];
-        firebase.db.collection("tbluserprofile").get()
-            .then((query) => {
-                if (query) {
-                    query.forEach((doc) => {
-                        meetingArray.push(doc.data());
-                    });
-                }
-
-                if (meetingArray) {
-                    this.setState({ meetData: meetingArray, meetinglist: true });
-                }
-                    
-
-            })
-
-    }
-    
-}
 
 
 
-    showMeetingList(){
-
-        const { meetData, currentuser} = this.state;
-        
-        //console.log(meetData);
-
-        const ShowMeetingArray = meetData.map((doc) => {
-            
-           
-            return (
-                <Card
-                    key={doc.uid}
-                    //onSwipe={this.onSwipe.bind(this, doc.uid)}
-                    onSwipeLeft={this.onSwipeLeft.bind(this)}
-                    onSwipeRight={this.onSwipeRight.bind(this, "asdasdas")}
-                    onDoubleTap={this.onDoubleTap.bind(this)}>
+    getAllusers() {
 
 
-                    <div id={doc.uid} class="gallery">
-                        <a>
-                            <img className="imggal" src={doc.image1} alt="5Terre" width="600" height="400" />
-                        </a>
-                        <div class="desc">
-                            <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
-                            <div className="col-md-4 text-center"> <p> {doc.displayname} <br /> {doc.email}</p> </div>
-                            <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
-                        </div>
-                    </div>
+        const { currentuser } = this.state;
 
-                </Card>
-            );
-
-        
+        if (currentuser) {
 
 
-       });
-    
 
-try {
-    return (<div>this is get meeting list   <CardWrapper addEndCard={this.getEndCard.bind(this)}>
-        {ShowMeetingArray}
-    </CardWrapper>   </div>);
+            var meetingArray = [];
+            firebase.db.collection("tbluserprofile").get()
+                .then((query) => {
+                    if (query) {
+                        query.forEach((doc) => {
+                            meetingArray.push(doc.data());
+                        });
+                    }
 
-} catch (error) {
-    console.log(error);
-}
+                    if (meetingArray) {
+                        this.setState({ meetData: meetingArray, meetinglist: true });
+                    }
 
-       
-       
-            
-      
+
+                })
+
+        }
+
     }
 
 
-    getEndCard() {
-        return (
-            <MyEndCard />
-        );
-    }
-    
-
-   
 
 
-// End Meeting list
-
-
-
-    // onSwipe(data) {
-    //     console.log("I was swiped.");
+    // onSwipe(data, dat ) {
+    //     console.log("I was swiped.", dat, data);
     // }
 
     onSwipeLeft(data) {
         console.log("I was swiped left.");
     }
 
-    onSwipeRight(data, dat) {
-        console.log("I was swiped right.", dat ,  this);
+    onSwipeRight(data) {
+        console.log("I was swiped right.",  data);
         //swal("Meet", "Do you want to meet " + dat,"info")
 
         swal({
             title: "Lets Meet People here",
-            text: "Do you want to meet !!!!",
+            text: "Do you want to meet " + data +" !!!!",
             icon: "info",
-            buttons: true,
-            dangerMode: true,
+            buttons: ["No", "Yes"],
+
         })
-            .then((willDelete) => {
-                if (willDelete) {
+            .then((isyes) => {
+                if (isyes) {
                     swal("Poof! Your Meeting has been fixed!", {
                         icon: "success",
                     });
@@ -547,74 +473,145 @@ try {
     onDoubleTap(data) {
         console.log("I was double tapped.");
     }
-    
-
-    
 
 
-ShowMapDirections(){
+
+    setMeetingListCards() {
+
+        const { meetData } = this.state;
+
+        //console.log(meetData);
+
+        const ShowMeetingArray = meetData.map((doc) => {
 
 
-    return(
-        <div>
+            return (
+                <Card
+                    key={doc.uid}
+                    // onSwipe={this.onSwipe.bind(this, doc.displayname)}
+                    onSwipeLeft={this.onSwipeLeft.bind(this)}
+                    onSwipeRight={this.onSwipeRight.bind(this, doc.displayname)}
+                    onDoubleTap={this.onDoubleTap.bind(this)}>
 
-            this is show map ShowMapDirections
+
+                    <div className="gallery">
+                        {doc.uid}
+                        <a>
+                            <img className="imggal" src={doc.image1} alt="5Terre" width="600" height="400" />
+                        </a>
+                        <div class="desc">
+                            <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
+                            <div className="col-md-4 text-center"> <p> {doc.displayname} <br /> {doc.email}</p> </div>
+                            <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
+                        </div>
+                    </div>
+
+                </Card>
+            );
+
+
+
+
+        });
+
+
+        try {
+            return (<div> <h1>Select A person for a Meeting!!</h1> <CardWrapper addEndCard={this.getEndCard.bind(this)}>
+                {ShowMeetingArray}
+            </CardWrapper>   </div>);
+
+        } catch (error) {
+            console.log(error);
+        }
+
+
+
+
+
+    }
+
+
+    getEndCard() {
+        return (
+            <MyEndCard />
+        );
+    }
+
+
+
+
+
+    // End Meeting list
+
+
+
+
+
+
+
+    ShowMapDirections() {
+
+
+        return (
+            <div>
+
+                this is show map ShowMapDirections
         </div>
 
-    );
-}
+        );
+    }
 
 
 
     render() {
 
 
-        const { currentuser, p1, p2, p3, meetinglist, showmapdirections } = this.state
-        const dashboardsrc = localStorage.getItem("dashboard");
+        const { currentuser, p1, p2, p3, meetinglist, showmapdirections, currentuseruid } = this.state
+        //const dashboardsrc = localStorage.getItem("dashboard");
         //console.log(currentuser ," render2");
-        return (<div> <h1>Dashboard!!! </h1> 
-           
+        return (<div> <h1>Dashboard!!! </h1>
 
-            
+
+
             {currentuser ? <ul>
-                {currentuser.providerData.map((user) =>{
-                    return(
-                        <li>Welcome {user.displayName}--{user.email}</li>
-                    )}
+                {currentuser.providerData.map((user, index) => {
+                    return (
+                        <li key={index}> Welcome {user.displayName}--{user.email}</li>
+                    )
+                }
                 )}
-            </ul>:<div></div>
-            
-                
+            </ul> : <div></div>
+
+
             }
 
-            
+
             {
                 !showmapdirections ?
-                <div>
+                    <div>
+                        {currentuseruid ? <div>
 
-                {dashboardsrc === "showmeeting" ? <div>
-
-                {meetinglist ? <div>
-                    {this.showMeetingList()} 
-                </div> : <div>“You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
+                            {meetinglist ? <div>
+                                {this.setMeetingListCards()}
+                            </div> : <div>“You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
              <button onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button> </div>}
-             
-              </div> : <div> 
 
-                    {p1 && !p2 && !p3 && this.profileScreen1()}
-                    {!p1 && p2 && !p3 && this.profileScreen2()}
-                    {!p1 && !p2 && p3 && this.profileScreen3()}
+                        </div> : <div>
 
-              </div>
-                }
-                
+                                {p1 && !p2 && !p3 && this.profileScreen1()}
+                                {!p1 && p2 && !p3 && this.profileScreen2()}
+                                {!p1 && !p2 && p3 && this.profileScreen3()}
+
+                            </div>
+                        }
+
                     </div> : <div> {this.ShowMapDirections()} </div>
-            
+
             }
-    
-            
-                <button onClick={this.LogoutFromAccount.bind(this)} type="submit" className="btn btn-primary">Logout</button>
-          
+
+
+            <button onClick={this.LogoutFromAccount.bind(this)} type="submit" className="btn btn-primary">Logout</button>
+
         </div>
         );
     }
