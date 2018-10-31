@@ -490,12 +490,11 @@ class Dashboard extends Component {
                     key={doc.uid}
                     // onSwipe={this.onSwipe.bind(this, doc.displayname)}
                     onSwipeLeft={this.onSwipeLeft.bind(this)}
-                    onSwipeRight={this.onSwipeRight.bind(this, doc.displayname)}
+                    onSwipeRight={this.onSwipeRight.bind(this, doc.displayname, doc.uid)}
                     onDoubleTap={this.onDoubleTap.bind(this)}>
 
 
                     <div className="gallery">
-                        {doc.uid}
                         <a>
                             <img className="imggal" src={doc.image1} alt="5Terre" width="600" height="400" />
                         </a>
