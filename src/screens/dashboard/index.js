@@ -52,6 +52,7 @@ class Dashboard extends Component {
         this.BackS3 = this.BackS3.bind(this);
         this.setMeetingListCards = this.setMeetingListCards.bind(this);
         this.setUserMeeting = this.setUserMeeting.bind(this);
+        this.getAllrequest = this.getAllrequest.bind(this);
         //this.readURL = this.readURL.bind(this);
     }
 
@@ -79,10 +80,17 @@ class Dashboard extends Component {
         localStorage.setItem("pnumber", e.target.value);
     }
 
+
+
+    setUserMeeting() {
+
+        this.setState({ booluserMeeting: true })
+    }
+    
     NextS1() {
 
         const { phonenumber, nickname } = this.state;
-        console.log(nickname, " nickname ", phonenumber, " phonenumber ");
+        //console.log(nickname, " nickname ", phonenumber, " phonenumber ");
 
         if (nickname.length > 0 && phonenumber.length > 0) {
             this.setState({
@@ -459,7 +467,6 @@ class Dashboard extends Component {
 
                 })
 
-            if (userMeeting) this.setState({ booluserMeeting : true })
             console.log(userMeeting);
             return userMeeting;
         }
@@ -601,10 +608,9 @@ class Dashboard extends Component {
         );
     }
 
-setUserMeeting(){
 
-     this.setState({ booluserMeeting: true }) 
-}
+
+
 
     render() {
 

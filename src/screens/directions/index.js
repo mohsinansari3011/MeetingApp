@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import swal from 'sweetalert';
 import * as firebase from '../../config/firebase'
 //import { withRouter, Link, Redirect, Route, browserHistory } from "react-router-dom";
-import { withScriptjs, withGoogleMap, InfoWindow, GoogleMap, Marker, GoogleApiWrapper } from "react-google-maps"
+import { withScriptjs, withGoogleMap, DirectionsRenderer, InfoWindow, GoogleMap, Marker, GoogleApiWrapper } from "react-google-maps"
 //const providerx = firebase.provider;
 import Calendar  from 'react-calendar';
 
-
+const baseurl = "https://api.foursquare.com/v2/venues/explore?client_id=R115HVNIDCG01UMD2PMZAJMBM3EPYZJOCRJXW2RNEEUIZABL&client_secret=ITIEJIPPTZWZSEWTPAGYBQ24D344WZW3KRVKDZDB4NW3DJCN&v=20181030&";
 
 class directionscreen extends Component {
 
@@ -26,6 +26,9 @@ class directionscreen extends Component {
 
 
         this.updateCoords = this.updateCoords.bind(this);
+        this.ExploreApiCoords = this.ExploreApiCoords.bind(this);
+        this.onSearch = this.onSearch.bind(this);
+        this.getDirections = this.getDirections.bind(this);
     }
 
 
@@ -81,7 +84,8 @@ class directionscreen extends Component {
         this.setPosition();
 
          setTimeout(() => {
-                this.ExploreApiCoords();
+             const { coords } = this.state;
+             this.ExploreApiCoords(baseurl.concat("ll=", coords.latitude, ",", coords.longitude));
                 }, 1000);
 
 
@@ -105,14 +109,15 @@ class directionscreen extends Component {
     //     console.log("shouldComponentUpdate2");
     // }
 
-    ExploreApiCoords() {
-        const { coords, locmarkers } = this.state;
+    ExploreApiCoords(url) {
+        //const { coords } = this.state;
+
+
         //console.log("ExploreApiCoords", coords)
-        if (coords) {
+        if (url) {
             //let locationNear = [];
             var i = 1;
-            let baseurl = "https://api.foursquare.com/v2/venues/explore?client_id=R115HVNIDCG01UMD2PMZAJMBM3EPYZJOCRJXW2RNEEUIZABL&client_secret=ITIEJIPPTZWZSEWTPAGYBQ24D344WZW3KRVKDZDB4NW3DJCN&v=20181030&ll=";
-            let url = baseurl.concat(coords.latitude, ",", coords.longitude);
+          
             fetch(url)
                 .then(res => res.json())//response type
                 .then(data => {
@@ -134,7 +139,7 @@ class directionscreen extends Component {
                             draggable={true}
                           >  {
                                   <InfoWindow>
-                                      <span>{explore.venue.name} <br /><button>Get Directions</button><button onClick={this.showCalenderscreen.bind(this, { lat: Mlat, Lng: Mlng }, explore.venue.name)}>Next</button></span>
+                                      <span>{explore.venue.name} <br /><button onClick={this.getDirections}>Get Directions</button><button onClick={this.showCalenderscreen.bind(this, { lat: Mlat, Lng: Mlng }, explore.venue.name)}>Next</button></span>
                                   </InfoWindow>
                             }
                               </Marker>);
@@ -184,8 +189,40 @@ class directionscreen extends Component {
 
     
 
+
+    getDirections() {
+        const DirectionsService = new google.maps.DirectionsService();
+
+        DirectionsService.route({
+            origin: new google.maps.LatLng(24.8812296, 67.0727269),
+            destination: new google.maps.LatLng(24.8861479, 67.0595196),
+            travelMode: google.maps.TravelMode.DRIVING,
+        }, (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                this.setState({
+                    directions: result,
+                });
+            } else {
+                alert("Sorry! Can't calculate directions!")
+            }
+        });
+    }
+
+
+    onSearch(e){
+
+        console.log(e.target.value);
+
+        if (e.target.value.length > 4) {
+            let url = baseurl.concat("near=", e.target.value);
+            console.log(url);
+            this.ExploreApiCoords(url);
+        }
+    }
+
+
     profileScreen4() {
-        const { coords, locmarkers} = this.state;
+        const { coords, locmarkers, directions} = this.state;
 
 
       
@@ -208,7 +245,7 @@ class directionscreen extends Component {
         //console.log(locmarkers , " marker");
         return (<div>
 
-
+<input onChange={this.onSearch} placeholer="karachi"/>
 
             {coords && <MyMapComponent
                 isMarkerShown
@@ -218,7 +255,7 @@ class directionscreen extends Component {
                 mapElement={<div style={{ height: `80%`, width: `100%` }} />}
                 coords={coords}
                 locmarker={locmarkers}
-               
+                directions={directions}
             />}
 
 
@@ -361,7 +398,7 @@ const MyMapComponent = withScriptjs(withGoogleMap((props) =>
     >
         
         {props.locmarker}
-
+        {props.directions && <DirectionsRenderer directions={props.directions} />}
     </GoogleMap> : <div> Loading Map...... </div>
     
 ))
