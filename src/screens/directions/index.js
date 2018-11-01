@@ -4,7 +4,7 @@ import * as firebase from '../../config/firebase'
 //import { withRouter, Link, Redirect, Route, browserHistory } from "react-router-dom";
 import { withScriptjs, withGoogleMap, InfoWindow, GoogleMap, Marker, GoogleApiWrapper } from "react-google-maps"
 //const providerx = firebase.provider;
-import Calendar from 'react-calendar';
+import Calendar  from 'react-calendar';
 
 
 
@@ -19,6 +19,7 @@ class directionscreen extends Component {
             locationNear : [],
             showcalender: false,
             date: new Date(),
+            time : '',
         };
 
 
@@ -124,7 +125,7 @@ class directionscreen extends Component {
                             let Mlng = explore.venue.location.lng;
                            const index = i + 1;
 
-
+                           // var selectedCoords = {lat: Mlat,Lng:Mlng};
                          
                           var locmarker =  (<Marker
                               key={index}
@@ -133,7 +134,7 @@ class directionscreen extends Component {
                             draggable={true}
                           >  {
                                   <InfoWindow>
-                                      <span>{explore.venue.name} <br /><button>Get Directions</button><button onClick={this.showCalenderscreen.bind(this)}>Next</button></span>
+                                      <span>{explore.venue.name} <br /><button>Get Directions</button><button onClick={this.showCalenderscreen.bind(this, { lat: Mlat, Lng: Mlng }, explore.venue.name)}>Next</button></span>
                                   </InfoWindow>
                             }
                               </Marker>);
@@ -226,31 +227,74 @@ class directionscreen extends Component {
     }
 
 
-showCalenderscreen(){
+showCalenderscreen(selectedCoords , venue){
 
     //const { showcalender } = this.state;
-
-    this.setState({ showcalender : true});
+    console.log(selectedCoords," selectedCoords");
+    console.log(venue, " venue");
+    
+    this.setState({ showcalender: true, selectedCoords , venue});
 }
 
 
-onChange = date => this.setState({ date })
+
+
+    submitData_db(matchername, matcheruid, selectedCoords, venue, date){
+
+        try {
+
+            const { currentuser } = this.state;
+            let useruid = currentuser.uid;
+            let userdname = currentuser.displayName;
+            let status = "PENDING";
+
+            console.log(useruid, userdname, status, matchername, matcheruid, selectedCoords, venue, date);
+
+            firebase.db.collection("tblusermeetings").add({ useruid, userdname, matchername, matcheruid, selectedCoords, venue, date, status })
+                .then().catch(err => swal('There was an error:', err, "error"))
+
+        } catch (error) {
+            swal('There was an error:', error, "error");
+        }
+       
+
+
+}
 
 onsendRequest()
 {
 
-    const { date } = this.state;
+    const { date, time, selectedCoords, venue } = this.state;
+
+    let matcheruid = localStorage.getItem("matcheruid");
+    let matchername = localStorage.getItem("matchername");
 
     //swal("info","Send the request?","info");
 
-    swal({
+    if (time.length <= 0) {
+        swal("error", "Invalid Time", "error");
+    }
+    else{
+        date.setHours(time.slice(0, time.length - 3), time.slice(3, time.length))
+        
+        this.setState({ date });
+
+        swal({
         title: "Send the request?",
-        text: "Do you want to Send the request? " + date +" !!!!",
+        text: "Do you want to Send the request? " + date + " !!!! " + time,
         icon: "info",
         buttons: ["Cancel", "Yes"],
     })
         .then((isyes) => {
             if (isyes) {
+
+                console.log(matchername, matcheruid, selectedCoords, venue, date);
+                //Submit the Data to database!!!
+                this.submitData_db(matchername, matcheruid, selectedCoords, venue, date);
+
+                console.log("submitted");
+
+
                 swal("Poof! Your Request has been Sent!", {
                     icon: "success",
                 });
@@ -265,7 +309,14 @@ onsendRequest()
             }
         });
 
+
+    }
+
 }
+
+
+    onChange = date => this.setState({ date })
+    onTimeChange = time => this.setState({ time : time.target.value })
 
 
   DateTimeSelectionScreen(){
@@ -273,7 +324,7 @@ onsendRequest()
       return (<div><Calendar
           onChange={this.onChange}
           value={this.state.date}
-      />
+      /> <input type="time" onChange={this.onTimeChange} />
           <div>  <button onClick={this.onsendRequest.bind(this)}>Send Request</button> </div>
       </div>);
 
@@ -305,7 +356,7 @@ const MyMapComponent = withScriptjs(withGoogleMap((props) =>
 
     
     props.locmarker ? <GoogleMap 
-        defaultZoom={12}
+        defaultZoom={13}
         center={{ lat: props.coords.latitude, lng: props.coords.longitude }}
     >
         

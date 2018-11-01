@@ -41,6 +41,7 @@ class Dashboard extends Component {
             gotomap: false,
             meetData: [],
             showmapdirections: false,
+            booluserMeeting : false,
         };
 
 
@@ -50,6 +51,7 @@ class Dashboard extends Component {
         this.BackS2 = this.BackS2.bind(this);
         this.BackS3 = this.BackS3.bind(this);
         this.setMeetingListCards = this.setMeetingListCards.bind(this);
+        this.setUserMeeting = this.setUserMeeting.bind(this);
         //this.readURL = this.readURL.bind(this);
     }
 
@@ -183,7 +185,7 @@ class Dashboard extends Component {
                         });
                     }
                     if (currentuseruid) {
-                        this.setState({ currentuseruid: currentuseruid });
+                        this.setState({ currentuseruid });
                     } else {
                         this.setState({ p1: true });
                     }
@@ -430,6 +432,42 @@ class Dashboard extends Component {
 
     }
 
+    getAllrequest() {
+
+
+        const { currentuser } = this.state;
+
+        if (currentuser) {
+
+
+
+            var userMeeting = [];
+          firebase.db.collection("tblusermeetings").where("useruid", "==", currentuser.uid).get()
+                .then((query) => {
+                  
+                          query ? query.forEach((doc) => {
+                                //console.log(doc.data());
+                              //userMeeting.push(doc.data());
+                              userMeeting.push(<div><li>{doc.data().matchername } </li>
+                                <li>{doc.data().userdname} </li> </div>);
+                              
+                            }) : <li>NotFound</li>
+                    // if (meetingArray) {
+                    //     this.setState({ meetData: meetingArray, meetinglist: true });
+                    // }
+
+
+                })
+
+            if (userMeeting) this.setState({ booluserMeeting : true })
+            console.log(userMeeting);
+            return userMeeting;
+        }
+
+
+        
+
+    }
 
 
 
@@ -454,9 +492,10 @@ class Dashboard extends Component {
         })
             .then((isyes) => {
                 if (isyes) {
-                    swal("Poof! Your Meeting has been fixed!", {
-                        icon: "success",
-                    });
+
+                    // swal("Poof! Your Meeting has been fixed!", {
+                    //     icon: "success",
+                    // });
 
                     localStorage.setItem("matchername", displayname );
                     localStorage.setItem("matcheruid", uid);
@@ -562,12 +601,15 @@ class Dashboard extends Component {
         );
     }
 
+setUserMeeting(){
 
+     this.setState({ booluserMeeting: true }) 
+}
 
     render() {
 
 
-        const { currentuser, p1, p2, p3, meetinglist, showmapdirections, currentuseruid } = this.state
+        const { currentuser, p1, p2, p3, meetinglist, showmapdirections, currentuseruid, booluserMeeting} = this.state
         //const dashboardsrc = localStorage.getItem("dashboard");
         //console.log(currentuser ," render2");
         return (<div> <h1>Dashboard!!! </h1>
@@ -595,7 +637,13 @@ class Dashboard extends Component {
                             {meetinglist ? <div>
                                 {this.setMeetingListCards()}
                             </div> : <div>“You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
-             <button onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button> </div>}
+                              <button onClick={this.setUserMeeting}> View Meetings </button>
+                               {booluserMeeting ? this.getAllrequest() : <ul>getAllrequest NotFound</ul>} 
+                                
+                                 
+
+             <button onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button>
+            </div>}
 
                         </div> : <div>
 
