@@ -82,10 +82,7 @@ class Dashboard extends Component {
 
 
 
-    setUserMeeting() {
-
-        this.setState({ booluserMeeting: true })
-    }
+   
     
     NextS1() {
 
@@ -440,35 +437,38 @@ class Dashboard extends Component {
 
     }
 
+
+    setUserMeeting() {
+
+        const {userMeeting} = this.state;
+        
+        console.log(userMeeting.length, " userMeeting");
+        console.log(userMeeting, " userMeeting");
+        userMeeting ?
+        userMeeting.map((data) => {
+
+            console.log(data);
+        })
+        : <div>nodata</div>
+        //this.setState({ booluserMeeting: true })
+    }
+
+
     getAllrequest() {
-
-
         const { currentuser } = this.state;
-
         if (currentuser) {
-
-
 
             var userMeeting = [];
           firebase.db.collection("tblusermeetings").where("useruid", "==", currentuser.uid).get()
                 .then((query) => {
-                  
                           query ? query.forEach((doc) => {
-                                //console.log(doc.data());
-                              //userMeeting.push(doc.data());
-                              userMeeting.push(<div><li>{doc.data().matchername } </li>
-                                <li>{doc.data().userdname} </li> </div>);
-                              
+                              userMeeting.push(doc.data());
                             }) : <li>NotFound</li>
-                    // if (meetingArray) {
-                    //     this.setState({ meetData: meetingArray, meetinglist: true });
-                    // }
 
-
-                })
+                    })
 
             console.log(userMeeting);
-            return userMeeting;
+            this.setState({ userMeeting, booluserMeeting: true });
         }
 
 
@@ -643,8 +643,8 @@ class Dashboard extends Component {
                             {meetinglist ? <div>
                                 {this.setMeetingListCards()}
                             </div> : <div>“You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
-                              <button onClick={this.setUserMeeting}> View Meetings </button>
-                               {booluserMeeting ? this.getAllrequest() : <ul>getAllrequest NotFound</ul>} 
+                              <button onClick={this.getAllrequest}> View Meetings </button>
+                                    {booluserMeeting ? this.setUserMeeting() : <ul>getAllrequest NotFound</ul>} 
                                 
                                  
 

@@ -191,21 +191,21 @@ class directionscreen extends Component {
 
 
     getDirections() {
-        const DirectionsService = new google.maps.DirectionsService();
+        // const DirectionsService = new google.maps.DirectionsService();
 
-        DirectionsService.route({
-            origin: new google.maps.LatLng(24.8812296, 67.0727269),
-            destination: new google.maps.LatLng(24.8861479, 67.0595196),
-            travelMode: google.maps.TravelMode.DRIVING,
-        }, (result, status) => {
-            if (status === google.maps.DirectionsStatus.OK) {
-                this.setState({
-                    directions: result,
-                });
-            } else {
-                alert("Sorry! Can't calculate directions!")
-            }
-        });
+        // DirectionsService.route({
+        //     origin: new google.maps.LatLng(24.8812296, 67.0727269),
+        //     destination: new google.maps.LatLng(24.8861479, 67.0595196),
+        //     travelMode: google.maps.TravelMode.DRIVING,
+        // }, (result, status) => {
+        //     if (status === google.maps.DirectionsStatus.OK) {
+        //         this.setState({
+        //             directions: result,
+        //         });
+        //     } else {
+        //         swal("error", "Sorry! Can't calculate directions!", "error")
+        //     }
+        // });
     }
 
 
