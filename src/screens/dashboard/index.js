@@ -4,6 +4,8 @@ import * as firebase from '../../config/firebase'
 import { Link } from "react-router-dom";
 import accepting from "../../images/accept.png"
 import rejecting from "../../images/deny.png"
+import defaultimg from '../../images/default.jpg'
+
 import { Card, CardWrapper } from 'react-swipeable-cards';
 
 
@@ -441,15 +443,24 @@ class Dashboard extends Component {
     setUserMeeting() {
 
         const {userMeeting} = this.state;
-        
-        console.log(userMeeting.length, " userMeeting");
-        console.log(userMeeting, " userMeeting");
-        userMeeting ?
-        userMeeting.map((data) => {
 
-            console.log(data);
+        return(userMeeting.map((data,i) => {
+
+            return (<div key={i} className="col-md-4"> 
+              <div className="gallery">
+                <a>
+                      <img src={defaultimg} alt="DefultImage" width="300" height="200"/>
+                </a>
+                  <div className="desc">{data.matchername} <br/>
+                      {data.venue}<br />
+                      {data.userdname}<br />
+                      {data.status}<br />
+                  </div>
+                </div>
+
+              </div>);
         })
-        : <div>nodata</div>
+        );
         //this.setState({ booluserMeeting: true })
     }
 
@@ -464,11 +475,12 @@ class Dashboard extends Component {
                           query ? query.forEach((doc) => {
                               userMeeting.push(doc.data());
                             }) : <li>NotFound</li>
-
+                    this.setState({ userMeeting, booluserMeeting: true });
+                    //console.log(userMeeting, " after");
                     })
 
-            console.log(userMeeting);
-            this.setState({ userMeeting, booluserMeeting: true });
+            //console.log(userMeeting);
+           
         }
 
 

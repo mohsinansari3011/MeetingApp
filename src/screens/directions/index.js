@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* global google */
+
 import React, { Component } from 'react';
 import swal from 'sweetalert';
 import * as firebase from '../../config/firebase'
@@ -85,6 +88,7 @@ class directionscreen extends Component {
 
          setTimeout(() => {
              const { coords } = this.state;
+             console.log(coords);
              this.ExploreApiCoords(baseurl.concat("ll=", coords.latitude, ",", coords.longitude));
                 }, 1000);
 
@@ -191,21 +195,21 @@ class directionscreen extends Component {
 
 
     getDirections() {
-        // const DirectionsService = new google.maps.DirectionsService();
+         const DirectionsService = new google.maps.DirectionsService();
 
-        // DirectionsService.route({
-        //     origin: new google.maps.LatLng(24.8812296, 67.0727269),
-        //     destination: new google.maps.LatLng(24.8861479, 67.0595196),
-        //     travelMode: google.maps.TravelMode.DRIVING,
-        // }, (result, status) => {
-        //     if (status === google.maps.DirectionsStatus.OK) {
-        //         this.setState({
-        //             directions: result,
-        //         });
-        //     } else {
-        //         swal("error", "Sorry! Can't calculate directions!", "error")
-        //     }
-        // });
+        DirectionsService.route({
+            origin: new google.maps.LatLng(24.8812296, 67.0727269),
+            destination: new google.maps.LatLng(24.8861479, 67.0595196),
+            travelMode: google.maps.TravelMode.DRIVING,
+        }, (result, status) => {
+            if (status === google.maps.DirectionsStatus.OK) {
+                this.setState({
+                    directions: result,
+                });
+            } else {
+                swal("error", "Sorry! Can't calculate directions!", "error")
+            }
+        });
     }
 
 
@@ -249,7 +253,7 @@ class directionscreen extends Component {
 
             {coords && <MyMapComponent
                 isMarkerShown
-                googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&amp;libraries=geometry,drawing,places"
+                googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJdeN0I2e7USVUmXotyl2hzgqKzdfHY1M&amp;v=3.exp&amp;libraries=geometry,drawing,places"
                 loadingElement={<div style={{ height: `80%`, width: `100%` }} />}
                 containerElement={<div style={{ height: `80vh`, width: `100vh` }} />}
                 mapElement={<div style={{ height: `80%`, width: `100%` }} />}
@@ -393,7 +397,7 @@ const MyMapComponent = withScriptjs(withGoogleMap((props) =>
 
     
     props.locmarker ? <GoogleMap 
-        defaultZoom={13}
+        defaultZoom={14}
         center={{ lat: props.coords.latitude, lng: props.coords.longitude }}
     >
         
