@@ -6,7 +6,25 @@ import accepting from "../../images/accept.png"
 import rejecting from "../../images/deny.png"
 import defaultimg from '../../images/default.jpg'
 
+import AddToCalendar from 'react-add-to-calendar'
 import { Card, CardWrapper } from 'react-swipeable-cards';
+
+
+
+firebase.db.collection("tblusermeetings")
+    .onSnapshot(function (snapshot) {
+        snapshot.docChanges().forEach(function (change) {
+            if (change.type === "added") {
+                console.log("New matchername: ", change.doc.data().matchername);
+            }
+            if (change.type === "modified") {
+                console.log("Modified matchername: ", change.doc.data().matchername);
+            }
+            if (change.type === "removed") {
+                console.log("Removed matchername: ", change.doc.data().matchername);
+            }
+        });
+    });
 
 
 
@@ -55,6 +73,7 @@ class Dashboard extends Component {
         this.setMeetingListCards = this.setMeetingListCards.bind(this);
         this.setUserMeeting = this.setUserMeeting.bind(this);
         this.getAllrequest = this.getAllrequest.bind(this);
+        this.showAddtoMyCalender = this.showAddtoMyCalender.bind(this);
         //this.readURL = this.readURL.bind(this);
     }
 
@@ -161,21 +180,21 @@ class Dashboard extends Component {
 
     componentDidUpdate() {
 
-        const img1 = localStorage.getItem("image1");
-        const img2 = localStorage.getItem("image2");
-        const img3 = localStorage.getItem("image3");
+        // const img1 = localStorage.getItem("image1");
+        // const img2 = localStorage.getItem("image2");
+        // const img3 = localStorage.getItem("image3");
 
-        if (img1 != null && img2 != null && img3 != null) {
-            if (img1.length > 0 && img2.length > 0 && img3.length > 0) {
+        // if (img1 != null && img2 != null && img3 != null) {
+        //     if (img1.length > 0 && img2.length > 0 && img3.length > 0) {
 
-                //console.log(document.getElementById("image1"));
-                if (document.getElementById("image1") && document.getElementById("image2") && document.getElementById("image3")) {
-                    document.getElementById("image1").setAttribute('src', img1);
-                    document.getElementById("image2").setAttribute("src", img2);
-                    document.getElementById("image3").setAttribute("src", img3)
-                }
-            }
-        }
+        //         //console.log(document.getElementById("image1"));
+        //         if (document.getElementById("image1") && document.getElementById("image2") && document.getElementById("image3")) {
+        //             document.getElementById("image1").setAttribute('src', img1);
+        //             document.getElementById("image2").setAttribute("src", img2);
+        //             document.getElementById("image3").setAttribute("src", img3)
+        //         }
+        //     }
+        // }
 
     }
 
@@ -408,6 +427,18 @@ class Dashboard extends Component {
 
 
 
+getSelection(){
+
+    firebase.db.collection("tblusermeetings")
+        .onSnapshot(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+                console.log("", doc.data().matchername);
+            });
+        });
+}
+
+
+
 
 
     getAllusers() {
@@ -460,8 +491,12 @@ class Dashboard extends Component {
 
               </div>);
         })
+
+
         );
         //this.setState({ booluserMeeting: true })
+    
+        
     }
 
 
@@ -605,7 +640,27 @@ class Dashboard extends Component {
 
 
 
+showAddtoMyCalender(){
+    let event = {
+        title: 'Sample Event',
+        description: 'This is the sample event provided as an example only',
+        location: 'Portland, OR',
+        startTime: '2016-09-16T20:15:00-04:00',
+        endTime: '2016-09-16T21:45:00-04:00'
+    };
+    let icon = { 'calendar-plus-o': 'left' };
 
+    let items = [{ outlook: 'Outlook' },      
+                { outlookcom: 'Outlook.com' },
+                { apple: 'Apple Calendar' },
+                { yahoo: 'Yahoo' },
+                { google: 'Google' }
+    ];
+
+    return(
+    <AddToCalendar event={event} buttonLabel="Put on my calendar" buttonTemplate={icon} listItems={items}/>
+    );
+}
 
 
     ShowMapDirections() {
@@ -656,8 +711,8 @@ class Dashboard extends Component {
                                 {this.setMeetingListCards()}
                             </div> : <div>“You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
                               <button onClick={this.getAllrequest}> View Meetings </button>
-                                    {booluserMeeting ? this.setUserMeeting() : <ul>getAllrequest NotFound</ul>} 
-                                
+                                    {booluserMeeting ? this.setUserMeeting() : <div></div>} 
+                                    {booluserMeeting ? this.showAddtoMyCalender() : <div>sdasd</div>} 
                                  
 
              <button onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button>

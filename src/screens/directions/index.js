@@ -143,7 +143,7 @@ class directionscreen extends Component {
                             draggable={true}
                           >  {
                                   <InfoWindow>
-                                      <span>{explore.venue.name} <br /><button onClick={this.getDirections}>Get Directions</button><button onClick={this.showCalenderscreen.bind(this, { lat: Mlat, Lng: Mlng }, explore.venue.name)}>Next</button></span>
+                                      <span>{explore.venue.name} <br /><button onClick={this.getDirections.bind(this, { lat: Mlat, Lng: Mlng })}>Get Directions</button><button onClick={this.showCalenderscreen.bind(this, { lat: Mlat, Lng: Mlng }, explore.venue.name)}>Next</button></span>
                                   </InfoWindow>
                             }
                               </Marker>);
@@ -194,12 +194,14 @@ class directionscreen extends Component {
     
 
 
-    getDirections() {
-         const DirectionsService = new google.maps.DirectionsService();
+    getDirections(selectedCoords) {
+
+        this.setState({ selectedCoords });
+       const DirectionsService = new google.maps.DirectionsService();
 
         DirectionsService.route({
             origin: new google.maps.LatLng(24.8812296, 67.0727269),
-            destination: new google.maps.LatLng(24.8861479, 67.0595196),
+            destination: new google.maps.LatLng(selectedCoords.lat , selectedCoords.Lng),
             travelMode: google.maps.TravelMode.DRIVING,
         }, (result, status) => {
             if (status === google.maps.DirectionsStatus.OK) {
