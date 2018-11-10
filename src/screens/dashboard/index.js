@@ -682,9 +682,7 @@ getSelection(){
         //const dashboardsrc = localStorage.getItem("dashboard");
         //console.log(currentuser ," render2");
 
-        if (currentuseruid) {
-            this.getAllrequest();
-        }
+        
         return (<div> <h1>Dashboard!!! </h1>
 
 
@@ -707,13 +705,14 @@ getSelection(){
                     <div>
                         {currentuseruid ? <div>
 
+                        {this.getAllrequest()}
+
                            {meetinglist ? <div>
                            {this.setMeetingListCards()}
-                            </div> : <div>“You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
-                             
-                                    {booluserMeeting ? this.setUserMeeting() : <div></div>} 
-
-                                <button className="btn btn-primary" onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button>
+                            </div> : <div>
+                             “You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
+                            {booluserMeeting ? this.setUserMeeting() : <div></div>} 
+                            <button className="btn btn-primary" onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button>
             </div>}
 
                         </div> : <div>
