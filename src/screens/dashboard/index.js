@@ -73,7 +73,6 @@ class Dashboard extends Component {
         this.setMeetingListCards = this.setMeetingListCards.bind(this);
         this.setUserMeeting = this.setUserMeeting.bind(this);
         this.getAllrequest = this.getAllrequest.bind(this);
-        this.showAddtoMyCalender = this.showAddtoMyCalender.bind(this);
         //this.readURL = this.readURL.bind(this);
     }
 
@@ -483,7 +482,29 @@ getSelection(){
 
         const {userMeeting} = this.state;
 
+
+        
+        let icon = { 'calendar-plus-o': 'left' };
+
+        let items = [{ outlook: 'Outlook' },
+        { outlookcom: 'Outlook.com' },
+        { apple: 'Apple Calendar' },
+        { yahoo: 'Yahoo' },
+        { google: 'Google' }
+        ];
+
+       
+
+
         return(userMeeting.map((data,i) => {
+
+            let event = {
+                title: "Meeting B/W " + data.matchername + " and "+ data.userdname,
+                description: 'This is the Reminder For Meeting event Orginized by MeetoApp',
+                location: data.venue,
+                startTime: data.date,
+                endTime: data.date
+            };
 
             return (<div key={i} className="col-md-4"> 
               <div className="gallery">
@@ -494,9 +515,11 @@ getSelection(){
                       {data.venue}<br />
                       {data.userdname}<br />
                       {data.status}<br />
+
+                        <AddToCalendar className="btn btn-primary" event={event} buttonLabel="Put on my calendar" buttonTemplate={icon} listItems={items} />
                   </div>
                 </div>
-
+               
               </div>);
         })
 
@@ -646,31 +669,6 @@ getSelection(){
     // End Meeting list
 
 
-
-
-showAddtoMyCalender(){
-    let event = {
-        title: 'Sample Event',
-        description: 'This is the sample event provided as an example only',
-        location: 'Portland, OR',
-        startTime: '2016-09-16T20:15:00-04:00',
-        endTime: '2016-09-16T21:45:00-04:00'
-    };
-    let icon = { 'calendar-plus-o': 'left' };
-
-    let items = [{ outlook: 'Outlook' },      
-                { outlookcom: 'Outlook.com' },
-                { apple: 'Apple Calendar' },
-                { yahoo: 'Yahoo' },
-                { google: 'Google' }
-    ];
-
-    return(
-    <AddToCalendar event={event} buttonLabel="Put on my calendar" buttonTemplate={icon} listItems={items}/>
-    );
-}
-
-
    
 
 
@@ -683,6 +681,10 @@ showAddtoMyCalender(){
         const { currentuser, p1, p2, p3, meetinglist, currentuseruid, booluserMeeting} = this.state
         //const dashboardsrc = localStorage.getItem("dashboard");
         //console.log(currentuser ," render2");
+
+        if (currentuseruid) {
+            this.getAllrequest();
+        }
         return (<div> <h1>Dashboard!!! </h1>
 
 
@@ -710,10 +712,7 @@ showAddtoMyCalender(){
                             </div> : <div>“You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
                              
                                     {booluserMeeting ? this.setUserMeeting() : <div></div>} 
-                                    {booluserMeeting ? this.showAddtoMyCalender() : <div></div>} 
-                                 
 
-                                <button className="btn btn-primary" onClick={this.getAllrequest}> View Meetings </button>
                                 <button className="btn btn-primary" onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button>
             </div>}
 
