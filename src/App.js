@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
 import * as firebase from './config/firebase'
-
+import logo from './logo.svg';
 import Routes from './config/router'
 
 
-const providerx = firebase.provider;
+//const providerx = firebase.provider;
 
 class App extends Component {
 
@@ -57,17 +57,14 @@ constructor(prop){
 	  
 
 	  return (
-		  <div>
-
-			  <h1>This is header!</h1>
-			  <Routes />
-			  <h1>This is footer!</h1>
-
-			  {
-				  
-				  
-
-			}
+		  <div className="App">
+			  <header className="App-header-a">
+				  <img src={logo} className="App-logo" alt="logo" />
+				  <h1 className="App-title">Meetoo App</h1>
+			  </header>
+			  <div className="container">
+				  <Routes />
+			  </div>
 		  </div>
 	  )
   }

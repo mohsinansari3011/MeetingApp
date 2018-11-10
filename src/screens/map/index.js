@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import swal from 'sweetalert';
 import * as firebase from '../../config/firebase'
-import { withRouter, Link, Redirect, Route, browserHistory } from "react-router-dom";
 import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
-const providerx = firebase.provider;
+
+//const providerx = firebase.provider;
 
 
 

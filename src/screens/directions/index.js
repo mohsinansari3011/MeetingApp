@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import swal from 'sweetalert';
 import * as firebase from '../../config/firebase'
 //import { withRouter, Link, Redirect, Route, browserHistory } from "react-router-dom";
-import { withScriptjs, withGoogleMap, DirectionsRenderer, InfoWindow, GoogleMap, Marker, GoogleApiWrapper } from "react-google-maps"
+import { withScriptjs, withGoogleMap, DirectionsRenderer, InfoWindow, GoogleMap, Marker } from "react-google-maps"
 //const providerx = firebase.provider;
 import Calendar  from 'react-calendar';
 
@@ -55,7 +55,7 @@ class directionscreen extends Component {
              
                 this.setState({ currentuser: user });
                 // this.setPosition();
-                console.log("componentDidMount");
+                //console.log("componentDidMount");
 
                 // setTimeout(() => {
                 //     this.ExploreApiCoords();
@@ -83,12 +83,11 @@ class directionscreen extends Component {
     componentWillMount(){
         //const { locationNear } = this.state;
 
-        console.log("componentWillMount");
+        //console.log("componentWillMount");
         this.setPosition();
 
          setTimeout(() => {
              const { coords } = this.state;
-             console.log(coords);
              this.ExploreApiCoords(baseurl.concat("ll=", coords.latitude, ",", coords.longitude));
                 }, 1000);
 
@@ -125,7 +124,12 @@ class directionscreen extends Component {
             fetch(url)
                 .then(res => res.json())//response type
                 .then(data => {
-                    let locations = data.response.groups[0].items;
+
+                    if (data) {
+                        
+                        //console.log(data.response);
+                        //console.log(data.response.groups.length);
+                         let locations = data.response.groups[0].items;
                  
                  locations.map(explore => {
 
@@ -150,40 +154,23 @@ class directionscreen extends Component {
 
                           i>1?
                           this.setState({ 
-                                  
                             locmarkers: [...this.state.locmarkers ,locmarker] 
-                        
                               }) : this.setState({
 
                                   locmarkers: locmarker
-
                               })
-
-
-                        //   this.setState({
-                        //       locationNear: this.state.locationNear.concat(
-                        //           {
-                        //               nearlocations: {
-                        //                   coordinates: { latitude: Mlat, longitude: Mlng }, venue: explore.venue.name
-                        //               }
-                        //             }
-                        //       )
-                            
-                        //       }
-                        //     )
-                          //locationNear.push({ coordinates: { latitude: lat, longitude: lng } } );
-                          //console.log(explore.venue.id, explore.venue.name, explore.venue.location.address
-                          //, explore.venue.location.lat, explore.venue.location.lng);
-                         
                           i++;
                         }
                        
                     })
-                    
-                });
 
-            //console.log(locationNear, " locationNear");
-            
+
+                    }
+                   
+                    
+                }).catch(error => {
+                    //console.error('Error:', error)
+                }) ;
         }
 
 
@@ -196,11 +183,12 @@ class directionscreen extends Component {
 
     getDirections(selectedCoords) {
 
-        this.setState({ selectedCoords });
+        const { coords } = this.state;
+       this.setState({ selectedCoords });
        const DirectionsService = new google.maps.DirectionsService();
 
         DirectionsService.route({
-            origin: new google.maps.LatLng(24.8812296, 67.0727269),
+            origin: new google.maps.LatLng(coords.latitude, coords.longitude),
             destination: new google.maps.LatLng(selectedCoords.lat , selectedCoords.Lng),
             travelMode: google.maps.TravelMode.DRIVING,
         }, (result, status) => {
@@ -217,11 +205,11 @@ class directionscreen extends Component {
 
     onSearch(e){
 
-        console.log(e.target.value);
+       // console.log(e.target.value);
 
         if (e.target.value.length > 4) {
             let url = baseurl.concat("near=", e.target.value);
-            console.log(url);
+            //console.log(url);
             this.ExploreApiCoords(url);
         }
     }
@@ -246,23 +234,30 @@ class directionscreen extends Component {
         
             
         
-
+        let Mapstyle = { 'textAlign': '-webkit-center', 'marginTop' : '20px'}
 
         //console.log(locmarkers , " marker");
         return (<div>
 
-<input onChange={this.onSearch} placeholer="karachi"/>
+        
+            <label>Find Location :</label>
+            <input className="form-control" onChange={this.onSearch} placeholer="karachi"/>
+            <div className="row">
+                <div className="col-md-12" style={Mapstyle}>
 
-            {coords && <MyMapComponent
+           
+            {coords && <MyMapComponent 
                 isMarkerShown
                 googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCJdeN0I2e7USVUmXotyl2hzgqKzdfHY1M&amp;v=3.exp&amp;libraries=geometry,drawing,places"
                 loadingElement={<div style={{ height: `80%`, width: `100%` }} />}
-                containerElement={<div style={{ height: `80vh`, width: `100vh` }} />}
+                        containerElement={<div style={{ height: `80vh`, width: `100%` }} />}
                 mapElement={<div style={{ height: `80%`, width: `100%` }} />}
                 coords={coords}
                 locmarker={locmarkers}
                 directions={directions}
             />}
+                </div>
+            </div>
 
 
         </div>);
@@ -273,8 +268,8 @@ class directionscreen extends Component {
 showCalenderscreen(selectedCoords , venue){
 
     //const { showcalender } = this.state;
-    console.log(selectedCoords," selectedCoords");
-    console.log(venue, " venue");
+    //console.log(selectedCoords," selectedCoords");
+    //console.log(venue, " venue");
     
     this.setState({ showcalender: true, selectedCoords , venue});
 }
@@ -291,7 +286,7 @@ showCalenderscreen(selectedCoords , venue){
             let userdname = currentuser.displayName;
             let status = "PENDING";
 
-            console.log(useruid, userdname, status, matchername, matcheruid, selectedCoords, venue, date);
+            //console.log(useruid, userdname, status, matchername, matcheruid, selectedCoords, venue, date);
 
             firebase.db.collection("tblusermeetings").add({ useruid, userdname, matchername, matcheruid, selectedCoords, venue, date, status })
                 .then().catch(err => swal('There was an error:', err, "error"))
@@ -331,11 +326,11 @@ onsendRequest()
         .then((isyes) => {
             if (isyes) {
 
-                console.log(matchername, matcheruid, selectedCoords, venue, date);
+                //console.log(matchername, matcheruid, selectedCoords, venue, date);
                 //Submit the Data to database!!!
                 this.submitData_db(matchername, matcheruid, selectedCoords, venue, date);
 
-                console.log("submitted");
+                //console.log("submitted");
 
 
                 swal("Poof! Your Request has been Sent!", {
@@ -363,12 +358,21 @@ onsendRequest()
 
 
   DateTimeSelectionScreen(){
+      let Mapstyle = { 'textAlign': '-webkit-center', 'marginTop': '20px' }
 
-      return (<div><Calendar
-          onChange={this.onChange}
-          value={this.state.date}
-      /> <input type="time" onChange={this.onTimeChange} />
-          <div>  <button onClick={this.onsendRequest.bind(this)}>Send Request</button> </div>
+      return (<div>
+
+          <label> Select Date/Time for Meeting</label>
+          <input type="time" className="form-control" onChange={this.onTimeChange} />
+
+          <div className="row">
+              <div className="col-md-12" style={Mapstyle}>
+          <Calendar onChange={this.onChange} value={this.state.date} /> 
+          </div>
+          </div>
+
+          
+          <button className="btn btn-primary" onClick={this.onsendRequest.bind(this)}>Send Request</button>
       </div>);
 
 

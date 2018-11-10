@@ -11,20 +11,20 @@ import { Card, CardWrapper } from 'react-swipeable-cards';
 
 
 
-firebase.db.collection("tblusermeetings")
-    .onSnapshot(function (snapshot) {
-        snapshot.docChanges().forEach(function (change) {
-            if (change.type === "added") {
-                console.log("New matchername: ", change.doc.data().matchername);
-            }
-            if (change.type === "modified") {
-                console.log("Modified matchername: ", change.doc.data().matchername);
-            }
-            if (change.type === "removed") {
-                console.log("Removed matchername: ", change.doc.data().matchername);
-            }
-        });
-    });
+// firebase.db.collection("tblusermeetings")
+//     .onSnapshot(function (snapshot) {
+//         snapshot.docChanges().forEach(function (change) {
+//             if (change.type === "added") {
+//                 console.log("New matchername: ", change.doc.data().matchername);
+//             }
+//             if (change.type === "modified") {
+//                 console.log("Modified matchername: ", change.doc.data().matchername);
+//             }
+//             if (change.type === "removed") {
+//                 console.log("Removed matchername: ", change.doc.data().matchername);
+//             }
+//         });
+//     });
 
 
 
@@ -60,7 +60,7 @@ class Dashboard extends Component {
             duration: [],
             gotomap: false,
             meetData: [],
-            showmapdirections: false,
+           
             booluserMeeting : false,
         };
 
@@ -253,10 +253,12 @@ class Dashboard extends Component {
 
 
         return (<div>
-            <input type="text" value={this.state.nickname} onChange={this.handlenickname.bind(this)} placeholder="nickname" />
-            <input type="text" value={this.state.phonenumber} onChange={this.handlephone.bind(this)} placeholder="phone number" />
-            <br /><br />
-            <input type="button" value="next" onClick={this.NextS1} />
+            <label>NickName : </label>
+            <input type="text" className="form-control" value={this.state.nickname} onChange={this.handlenickname.bind(this)} placeholder="nickname" />
+            <label>Phone : </label>
+            <input type="number" className="form-control" value={this.state.phonenumber} onChange={this.handlephone.bind(this)} placeholder="phone number" />
+            <br />
+            <input className="btn btn-primary" type="button" value="next" onClick={this.NextS1} />
 
         </div>);
     }
@@ -300,18 +302,27 @@ class Dashboard extends Component {
         return (<div>
             <h1>Select Images</h1>
 
+        <div className="col-md-12">
+
             <input onChange={this.changefile.bind(this)} id="fileInput1" type="file" style={{ display: "none", }} />
+            
+                <div className="col-md-4">
             <img id="image1" alt="picutre" src="http://blog.ramboll.com/fehmarnbelt/wp-content/themes/ramboll2/images/profile-img.jpg"
                 alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)} />
-            <br />
+          </div>
+                <div className="col-md-4">
             <img id="image2" alt="picutre" src="http://blog.ramboll.com/fehmarnbelt/wp-content/themes/ramboll2/images/profile-img.jpg"
                 alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)} />
-            <br />
+         </div>
+                <div className="col-md-4">
             <img id="image3" alt="picutre" src="http://blog.ramboll.com/fehmarnbelt/wp-content/themes/ramboll2/images/profile-img.jpg"
                 alt="" className="logo" width="120" height="120" onClick={this.clickfile.bind(this)} />
+            </div>
+            </div>
+
             <br />
-            <input type="button" value="back" onClick={this.BackS2} />
-            <input type="button" value="next" onClick={this.NextS2} />
+            <input className="btn btn-primary"  type="button" value="back" onClick={this.BackS2} />
+            <input className="btn btn-primary"  type="button" value="next" onClick={this.NextS2} />
 
         </div>);
     }
@@ -370,7 +381,7 @@ class Dashboard extends Component {
 
     checkbevearages() {
 
-        const { gotomap } = this.state;
+        //const { gotomap } = this.state;
         const duration = localStorage.getItem("duration");
         const beverages = localStorage.getItem("beverages");
 
@@ -447,9 +458,6 @@ getSelection(){
         const { currentuser } = this.state;
 
         if (currentuser) {
-
-
-
             var meetingArray = [];
             firebase.db.collection("tbluserprofile").get()
                 .then((query) => {
@@ -593,10 +601,10 @@ getSelection(){
                         <a>
                             <img className="imggal" src={doc.image1} alt="5Terre" width="600" height="400" />
                         </a>
-                        <div class="desc">
+                        <div className="desc">
                             <div className="col-md-4 text-center"> <img src={rejecting} alt="check" width="25" height="25" /> </div>
                             <div className="col-md-4 text-center"> <p> {doc.displayname} <br /> {doc.email}</p> </div>
-                            <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" /> </div>
+                            <div className="col-md-4 text-center"> <img src={accepting} alt="check" width="25" height="25" onClick={this.onSwipeRight.bind(this, doc.displayname, doc.uid)} /> </div>
                         </div>
                     </div>
 
@@ -663,17 +671,7 @@ showAddtoMyCalender(){
 }
 
 
-    ShowMapDirections() {
-
-
-        return (
-            <div>
-
-                this is show map ShowMapDirections
-        </div>
-
-        );
-    }
+   
 
 
 
@@ -682,7 +680,7 @@ showAddtoMyCalender(){
     render() {
 
 
-        const { currentuser, p1, p2, p3, meetinglist, showmapdirections, currentuseruid, booluserMeeting} = this.state
+        const { currentuser, p1, p2, p3, meetinglist, currentuseruid, booluserMeeting} = this.state
         //const dashboardsrc = localStorage.getItem("dashboard");
         //console.log(currentuser ," render2");
         return (<div> <h1>Dashboard!!! </h1>
@@ -703,19 +701,20 @@ showAddtoMyCalender(){
 
 
             {
-                !showmapdirections ?
+              
                     <div>
                         {currentuseruid ? <div>
 
-                            {meetinglist ? <div>
-                                {this.setMeetingListCards()}
+                           {meetinglist ? <div>
+                           {this.setMeetingListCards()}
                             </div> : <div>“You haven’t done any meeting yet!”, try creating a new meeting! And a button, “Set a meeting!”.
-                              <button onClick={this.getAllrequest}> View Meetings </button>
+                             
                                     {booluserMeeting ? this.setUserMeeting() : <div></div>} 
-                                    {booluserMeeting ? this.showAddtoMyCalender() : <div>sdasd</div>} 
+                                    {booluserMeeting ? this.showAddtoMyCalender() : <div></div>} 
                                  
 
-             <button onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button>
+                                <button className="btn btn-primary" onClick={this.getAllrequest}> View Meetings </button>
+                                <button className="btn btn-primary" onClick={this.getAllusers.bind(this)}>Set a Meeting!!</button>
             </div>}
 
                         </div> : <div>
@@ -727,11 +726,11 @@ showAddtoMyCalender(){
                             </div>
                         }
 
-                    </div> : <div> {this.ShowMapDirections()} </div>
+                    </div> 
 
             }
 
-
+            <br/>
             <button onClick={this.LogoutFromAccount.bind(this)} type="submit" className="btn btn-primary">Logout</button>
 
         </div>
